@@ -1,0 +1,30 @@
+---
+import { ROUTE_SIGN_IN } from '~/config'
+import Layout from '~/layouts/Default.astro'
+import button from '~/design-system/styles/button'
+
+const buttonStyles = button({intent: 'brand', size: 'default', class:"unstyled"})
+
+const meta = {
+  title: "y3llow - Support builders & strangers",
+  description: "Create your decentralized profile and send tips to friends (and strangers) with y3llow.",
+  permalink: "",
+  previewImageSrc: "/preview.png",
+}
+---
+<Layout content={meta} showPopover={false} >
+  <main class="container m-auto">
+    <div class="container m-auto">
+      <h1 class="md:max-w-3/4 text-4xl font-extrabold">Support <span class="text-highlight-10">builders</span> and <span class="text-highlight-10">strangers.</span></h1>
+      <section class="mt-4 mb-8">
+        <p class="text-lg"><span class="font-black tracking-widest">y<span class="text-[yellow]">3</span>llow <span aria-hidden="true" class="text-sm">📒</span></span> <span class="font-semibold">is a mix of buymeacoffee and the yellow pages.</span></p>
+        <div class="pt-8 text-neutral-12 font-medium space-y-3">
+          <p>Create your decentralized profile.</p>
+          <p>Discover who's behind an Ethereum address.</p>
+          <p>Tip people you like <span class="text-neutral-8 font-regular">(or just because you feel like it.)</span></p>
+        </div>
+      </section>
+      <a class={buttonStyles} href={ROUTE_SIGN_IN}>Sign in to get started</a>
+    </div>
+  </main>  	
+</Layout>

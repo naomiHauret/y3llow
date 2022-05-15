@@ -1,0 +1,10 @@
+.panel [role='dialog'] {
+  @apply transition duration-300 translate-y-5 opacity-0;
+  transition-delay: 300ms;
+}
+
+.panel [data-part='trigger'][data-expanded] ~ [role='dialog'] {
+  @apply opacity-100 translate-y-0;
+  transition-delay: 2300ms;
+  transition-duration: 400ms;
+}

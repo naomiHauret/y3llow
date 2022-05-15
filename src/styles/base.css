@@ -1,0 +1,127 @@
+/*
+  font-face rules (custom fonts declarations)
+*/
+
+/*
+Tailwind setup
+*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-base;
+  }
+
+  a:not(.unstyled) {
+    @apply focus:outline-none font-medium underline text-highlight-10 hover:text-highlight-9 focus:text-highlight-11 focus:no-underline;
+  }
+
+  input,
+  textarea {
+    @apply appearance-none;
+  }
+
+  [aria-disabled='true'],
+  :disabled {
+    @apply opacity-75 pointer-events-none;
+  }
+}
+
+@layer utilities {
+  :root {
+    --gradient-brand: linear-gradient(to right, #85fff8 0%, #91e4ff 5%, #fff27e 50%, #f4b1ff 85%, #d5c1ff 100%);
+  }
+  .font-thin {
+    font-variation-settings: 'wght' 100;
+  }
+  .font-extralight {
+    font-variation-settings: 'wght' 200;
+  }
+  .font-light {
+    font-variation-settings: 'wght' 300;
+  }
+  .font-normal {
+    font-variation-settings: 'wght' 400;
+  }
+  .font-medium {
+    font-variation-settings: 'wght' 500;
+  }
+  .font-semibold {
+    font-variation-settings: 'wght' 600;
+  }
+  .font-bold {
+    font-variation-settings: 'wght' 700;
+  }
+  .font-extrabold {
+    font-variation-settings: 'wght' 800;
+  }
+  .font-black {
+    font-variation-settings: 'wght' 900;
+  }
+
+  .bg-gradient-brand,
+  .text-gradient-brand {
+    background-image: var(--gradient-brand);
+  }
+
+  .text-gradient-brand {
+    color: transparent;
+    text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-gradient-brand,
+  .border-gradient-brand {
+    @apply relative;
+    z-index: 1;
+  }
+  .border-gradient-brand {
+    background-image: var(--gradient-brand);
+    border-color: transparent;
+  }
+
+  .bg-gradient-brand::after,
+  .border-gradient-brand::after {
+    @apply absolute inset-0;
+    content: '';
+    border-radius: inherit;
+    z-index: -1;
+  }
+}
+
+@layer components {
+  /* Container */
+  .container {
+    @apply px-3 max-w-screen-lg;
+  }
+
+  .profile-cover,
+  .banner {
+    min-height: 200px;
+    max-height: calc(100vw / 5.8 - 1px);
+  }
+
+  /* Profile cover */
+  .profile-cover {
+    @apply bg-neutral-2 w-full;
+    aspect-ratio: 3 / 1;
+  }
+
+  /* Profile picture */
+  .profile-picture {
+    @apply bg-neutral-4 aspect-square w-32 mb-6 -mt-10 2xs:-mt-14 xs:-mt-16 sm:w-40 sm:-mt-24 rounded-full ring-8 ring-true-black;
+  }
+
+  /* Input */
+  .default-input {
+    @apply focus:outline-none appearance-none transition-colors duration-300 border-solid border-1 bg-true-white bg-opacity-3.5 focus:bg-opacity-7.5 border-true-white border-opacity-15 hover:border-opacity-25 focus:border-opacity-25 px-2 py-1 text-sm rounded-md;
+  }
+
+  .default-input[aria-invalid='true'],
+  .default-input[aria-invalid='true'],
+  .default-input:not(:placeholder-shown):invalid {
+    @apply bg-negative-1 bg-negative-2 border-negative-6 focus:border-negative-8 text-negative-11 !important;
+  }
+}

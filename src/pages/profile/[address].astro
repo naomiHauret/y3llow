@@ -1,0 +1,38 @@
+---
+import { get as getProfile } from '~/pages/api/profile'
+import { get as getDonations } from '~/pages/api/donations'
+
+import { isValidEthereumAddress , isCurrentUser, isAuthenticated} from '~/helpers'
+import { ROUTE_NOT_FOUND, ROUTE_MY_PROFILE } from '~/config'
+import Default from '~/layouts/Default.astro'
+import ProfileNotCreated from '~/components/astro/ProfileNotCreated.astro'
+import Profile from '~/components/astro/Profile.astro'
+
+const address = String(Astro.params.address)
+if(!isValidEthereumAddress(address)) {
+  return Astro.redirect(ROUTE_NOT_FOUND)
+}
+
+const dataRes = await getProfile({request: Astro.request, params: Astro.params})
+const data = dataRes ? await dataRes.json() : null
+
+const donationsRes = await getDonations({request: Astro.request, params: Astro.params})
+const donations = donationsRes ? await donationsRes.json() : null
+const listDonations = donations.data
+const isOwner = isCurrentUser(Astro.request, address)
+const isCurrentUserAuthenticated = isAuthenticated(Astro.request)
+
+const metadescription = data?.profile?.name ? `Join ${data?.profile?.name} on y3llow, create your decentralized profile and support other people !` : "Discover who is behind the Ethereum address ${address} on y3llow" 
+const meta = {
+  title: `Profile ${address}`,
+  description: metadescription,
+  permalink: `/profile/${address}`,
+  previewImageSrc: "/preview.png",
+}
+
+---
+<Default showPopover={true} content={meta}>
+  <main class="pb-8 bg-neutral-tinted-1 flex-grow">
+    {data.created ? <><Profile initialDonationsList={listDonations} address={address} data={data.profile} isCurrentUserAuthenticated={isCurrentUserAuthenticated} isOwner={isOwner} /></> : <ProfileNotCreated address={address} />}
+  </main>
+</Default>

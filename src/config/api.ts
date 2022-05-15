@@ -1,0 +1,6 @@
+export const API_ROUTE_VERIFY_USER = '/api/verify'
+export const API_ROUTE_LOGOUT = '/api/logout'
+export const API_ROUTE_PROFILE = '/api/profile'
+export const API_ROUTE_CURRENT_USER_ADDRESS = '/api/me'
+export const API_ROUTE_NONCE_GENERATOR = '/api/nonce'
+export const API_ROUTE_DONATIONS = '/api/donations'

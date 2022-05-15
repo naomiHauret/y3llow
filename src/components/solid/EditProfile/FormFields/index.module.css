@@ -1,0 +1,4 @@
+.fieldset {
+  max-width: calc(100vw - 2rem);
+  @apply 2xs:max-w-unset;
+}

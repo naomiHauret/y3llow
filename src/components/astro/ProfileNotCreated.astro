@@ -1,0 +1,19 @@
+---
+import ProfilePanelSignIn from './ProfilePanelSignIn.astro'
+---
+<div class="profile-cover"></div>
+<div class="container mx-auto">
+  <div class="profile-picture" />
+  <h1 class="sr-only">
+    {Astro.props.address} decentralized profile
+  </h1>
+  <div class="flex flex-col space-y-6 md:space-y-0 md:space-x-8 md:flex-row">
+    <ProfilePanelSignIn screenVariant="mobile" />
+    <div class="md:w-1/2 lg:w-8/12">
+      <div class="text-4xl font-extrabold block">Who dis ? <span aria-hidden="true">👀</span></div>
+      <span class="mt-2 block overflow-hidden max-w-fit-content text-ellipsis text-xs font-medium bg-neutral-3 text-true-white font-mono rounded-full py-0.5 px-3"><span class="sr-only">Ethereum address: </span>{Astro.props.address}</span>
+      <p class="mt-3 text-md-hidden text-neutral-11 mb-6">There's no decentralized profile associated to this Ethereum address.</p>
+    </div>
+    <ProfilePanelSignIn screenVariant="desktop" />
+  </div>
+</div>

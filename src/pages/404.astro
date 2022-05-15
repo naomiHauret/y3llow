@@ -1,0 +1,20 @@
+---
+import { ROUTE_HOME } from '~/config';
+import Layout from '~/layouts/Default.astro'
+import button from '~/design-system/styles/button'
+
+const buttonStyles = button({intent: 'primary-outline', size: 'default', class:"unstyled"})
+const meta = {
+  title: "Page not found",
+  description: "y3llow is a Web3 yellow pages app powered by Astro",
+  permalink: "",
+  previewImageSrc: "/preview.png",
+}
+---
+<Layout content={meta} showPopover={false} >
+  <main class="m-auto container text-center">
+    <h1 class="text-4xl text-highlight-10 font-extrabold">Page not found.</h1>
+    <p class="py-4 text-neutral-11">Sorry, we couldn't find this page: it doesn't exist or got deleted.</p>
+    <a class={buttonStyles} href={ROUTE_HOME}>Go home</a>
+  </main>
+</Layout>

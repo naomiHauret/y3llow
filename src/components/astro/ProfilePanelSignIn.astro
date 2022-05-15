@@ -1,0 +1,19 @@
+---
+import { ROUTE_SIGN_IN } from "~/config"
+import button from "~/design-system/styles/button"
+import { cva } from "class-variance-authority"
+
+const loginButtonStyles = button({intent: "brand-outline", class: "text-center inline-flex mt-3 xs:mis-auto md:mis-0 xs:mt-0 md:w-full md:mt-4 after:bg-true-black xs:flex-shrink-0 md:inline-flex unstyled"})  
+const block = cva("border-solid border-1 border-neutral-6 rounded-lg p-6", {
+  variants: {
+    screen: {
+      desktop: "hidden md:block md:h-fit-content md:sticky md:top-5 md:inline-end-0 md:1/2 lg:w-4/12 md:mis-auto",
+      mobile: "flex flex-col xs:flex-row md:hidden"
+  }}
+})
+const panelStyle = block({ screen: Astro.props.screenVariant })
+---
+<div class={panelStyle}>
+  <p class="text-lg xs:pie-4 md:pie-0 font-extrabold">Is this your Ethereum address ?</p>
+  <a href={ROUTE_SIGN_IN} class={loginButtonStyles}>Sign in to get started  <span aria-hidden="true">✨</span></a>
+</div>

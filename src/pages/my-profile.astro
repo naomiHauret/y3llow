@@ -1,0 +1,37 @@
+---
+import { get as getProfile } from '~/pages/api/profile'
+import Default from '~/layouts/Default.astro'
+import { getCurrentUserAddress, isAuthenticated } from '~/helpers'
+import { ROUTE_SIGN_IN } from '~/config'
+import EditProfile from './../components/solid/EditProfile'
+
+const address = getCurrentUserAddress(Astro.request)
+const isCurrentUserAuthenticated = isAuthenticated(Astro.request)
+
+if(!isCurrentUserAuthenticated) {
+    return Astro.redirect(ROUTE_SIGN_IN)
+}
+
+const dataRes = await getProfile({request: Astro.request, params: Astro.params})
+const data = await dataRes.json()
+
+// Metadata
+const meta = {
+  title: "Edit my profile",
+  description: "Edit your decentralized profile on y3llow",
+  permalink: "my-profile",
+  previewImageSrc: "/preview.png",
+}
+
+---
+<Default content={meta} showPopover={true}>
+  <main class="pb-8">
+    <div class="banner flex mb-8 border-b-1 border-solid border-neutral-6">
+      <div class="container flex flex-col justify-center items-start mx-auto">
+        <h1 class="text-2xl font-extrabold">Edit your profile</h1>
+        <p class="font-mono text-neutral-11">Powered by Ceramic</p>
+      </div>
+    </div>
+    <EditProfile defaultValues={data?.profile} client:idle />
+  </main>
+</Default>

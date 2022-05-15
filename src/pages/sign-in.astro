@@ -1,0 +1,31 @@
+---
+import { ROUTE_DASHBOARD } from '~/config'
+import { isAuthenticated } from '~/helpers'
+import Default from "~/layouts/Default.astro"
+import ButtonGroupWalletOptions from './../components/solid/ButtonGroupWalletOptions'
+
+const isCurrentUserAuthenticated = isAuthenticated(Astro.request)
+
+if(isCurrentUserAuthenticated) {
+  return Astro.redirect(ROUTE_DASHBOARD)
+} 
+
+const meta = {
+  title: "Sign in",
+  description: "Sign in to start using y3llow.",
+  permalink: "/sign-in",
+  previewImageSrc: "/preview.png",
+}
+---
+
+<Default content={meta} showPopover={false}>
+  <main class="mx-auto px-3 mt-20 sm:my-auto max-w-screen-2xs">
+    <h1 class="text-4xl font-bold mb-4">Sign-in</h1>
+    <p class="text-neutral-12 text-xs">Use your favourite Ethereum wallet to sign-in to access all the cool stuff.</p>
+    <div class="pt-5 pb-8">
+      <ButtonGroupWalletOptions client:idle />
+    </div>
+    <p class="text-neutral-11 text-center text-xs">By connecting your wallet and using y3llow, you agree to our <a href="/" target="_blank">terms and conditions</a> and <a href="/" target="_blank">privacy policy</a>.</p>
+  </main>
+</Default>
+

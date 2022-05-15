@@ -1,0 +1,64 @@
+---
+import ProfilePanelSignIn from './ProfilePanelSignIn.astro'
+import ipfsToHttpsUrl from '~/helpers/ipfsToHttpsUrl'
+import { IconCardId, IconLink } from '../solid/Icons'
+import button from './../../design-system/styles/button'
+import PanelDonate from './../../components/solid/PanelDonate'
+import ListDonations from '../solid/ListDonations'
+const buttonStyles = button({intent: 'primary-outline', class: 'unstyled'})
+const data = Astro.props.data
+const isOwner = Astro.props.isOwner
+const to = Astro.props.address
+const initialDonationsList = Astro.props.initialDonationsList
+const isAuthenticated = Astro.props.isCurrentUserAuthenticated
+--- 
+<div class="profile-cover">{data?.background?.original && <img class="w-full h-full object-cover" src={ipfsToHttpsUrl(data.background.original.src)} alt="" />}</div>
+<div class="container mx-auto">
+  <div class="profile-picture relative z-10">
+    {data?.image?.original && <img class="w-full  h-full object-cover rounded-full" src={ipfsToHttpsUrl(data.image.original.src)} alt="" />}
+    {data?.emoji && <div class="absolute -bottom-1 -inline-end-2 z-10 flex items-center justify-center p-2 aspect-square bg-true-white border-solid border-4 border-true-black rounded-full text-md">
+      {data.emoji}
+   </div>}
+</div>
+<h1 class="sr-only">{Astro.props.address} decentralized profile</h1>
+<div class="flex flex-col space-y-6 md:space-y-0 md:space-x-8 md:flex-row">
+  {isOwner && <a class={`mie-auto w-auto md:hidden ${buttonStyles}`} href="/my-profile">
+    Edit my profile
+  </a>}      
+  <div class="md:w-1/2 lg:w-8/12">
+    <section>
+      <h2 class="sr-only">General information</h2>
+      <p class="text-4xl font-extrabold">{data?.name ? data?.name : "Who dis 👀 ? "}</p>
+      <div class="flex items-baseline">
+        {data?.gender && data?.gender?.trim().length > 0 && <p class="text-neutral-11 text-lg pie-[1.5ex]">{data.gender}</p>}
+        {data?.homeLocation && data?.homeLocation?.trim().length > 0 &&<p class="text-md font-medium text-neutral-8 pie-[1.5ex]">{data.homeLocation}</p>}
+        {data?.url && data?.url?.trim().length > 0 && <p><a href={data?.url} class="flex text-sm items-center" target="_blank"><IconLink class="mie-[0.5ex]" /> <span>Website</span></a></p>}
+      </div>
+      <p class="mt-4 text-lg">
+        {data?.description && data?.description.trim().length > 0 ? data.description : <span class="italic text-neutral-11">Looks like {data?.name.trim() !== "" ? data.name : "this person"} has nothing to say.</span>}
+      </p>
+    </section>
+    <section class="pt-6">
+      <h2 class="sr-only">Affiliations</h2>
+      {data?.affiliations?.filter(affiliation => affiliation.trim() !== "")?.length > 0 ? <ul class="space-y-1">
+      {data?.affiliations.map(affiliation => (
+        <li class="text-neutral-9 flex rounded-md">
+          <IconCardId class="text-neutral-7 text-2xl mie-[1ex]" />
+          {affiliation}
+        </li>))
+      }</ul> : <p class="italic text-neutral-8">No affiliations</p>}
+    </section>
+    {<section class="mt-6 pt-8 border-t-1 border-neutral-4 border-solid">
+      <h2 class="text-lg font-bold mb-6 text-gradient-brand">Recent supporters</h2>
+      <ListDonations initialDonationsList={initialDonationsList} client:idle />
+    </section>}
+   </div>
+   {isOwner ? <div class="md:w-1/2 lg:w-4/12">
+     <a class={`hidden md:mis-auto md:flex md:w-[fit-content] ${buttonStyles}`} href="/my-profile">
+       Edit my profile
+      </a> 
+    </div> : <div class="md:w-1/2 lg:w-4/12">
+      <PanelDonate isAuthenticated={isAuthenticated} initialDonationsList={initialDonationsList} to={to} client:idle />
+    </div>}
+    </div>
+</div>
