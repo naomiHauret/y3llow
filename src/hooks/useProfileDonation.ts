@@ -2,9 +2,9 @@ import { sendTransaction, connect, waitForTransaction } from '@wagmi/core'
 import { parseEther } from 'ethers/lib/utils'
 import create from 'solid-zustand'
 import { useAccount } from '~/hooks/useAccount'
-import { API_ROUTE_DONATIONS, API_ROUTE_PROFILE, client } from '~/config'
-import { createEffect, createSignal, createUniqueId, onMount } from 'solid-js'
-import { string, number, object, bigint } from 'zod'
+import { API_ROUTE_DONATIONS, client } from '~/config'
+import { createUniqueId, onMount } from 'solid-js'
+import { string, number, object } from 'zod'
 import { useMachine, useSetup } from '@zag-js/solid'
 import * as toast from '@zag-js/toast'
 import { createForm } from '@felte/solid'
@@ -12,6 +12,7 @@ import { reporter } from '@felte/reporter-solid'
 import { validateSchema } from '@felte/validator-zod'
 import useWagmiStore from './useWagmiStore'
 import useNetwork from './useNetwork'
+import type { PropTypes } from '@zag-js/solid'
 
 const schema = object({
   chain: string(),
@@ -56,7 +57,7 @@ export function useProfileDonation(initialDonationsList, to) {
     }),
   )
   const ref = useSetup({ send, id: createUniqueId() })
-  const apiToast = toast.group.connect(state, send)
+  const apiToast = toast.group.connect<PropTypes>(state, send)
   const storeForm = createForm({
     initialValues: {
       amount: '',

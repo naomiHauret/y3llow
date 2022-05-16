@@ -1,8 +1,8 @@
 import { createSignal, createEffect } from 'solid-js'
 import { watchNetwork, getNetwork, connect } from '@wagmi/core'
+import { client } from '~/config'
 import useAccount from './useAccount'
 import useWagmiStore from './useWagmiStore'
-import { client } from '~/config'
 
 export function useNetwork() {
   const wagmiState = useWagmiStore()

@@ -19,7 +19,7 @@ export async function get({ request, params }) {
     return new Response(
       JSON.stringify({
         created: true,
-        profile: dataBasicProfile,
+        profile: dataBasicProfile && dataBasicProfile !== null ? dataBasicProfile : {},
       }),
       {
         headers,
@@ -33,7 +33,6 @@ export async function get({ request, params }) {
         JSON.stringify({
           message: 'No DID found',
           created: false,
-          // isDevDaoMember,
         }),
         {
           headers,
@@ -43,7 +42,7 @@ export async function get({ request, params }) {
     if (e.message.includes('Service Temporarily Unavailable')) {
       return new Response(
         JSON.stringify({
-          created: null,
+          created: false,
           message: 'Ceramic is temporarily unavailable',
         }),
         {

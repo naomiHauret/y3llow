@@ -10,6 +10,7 @@ import { createMemo, createUniqueId } from 'solid-js'
 import { Transition } from 'solid-headless'
 import ButtonGroupWalletOptions from '../ButtonGroupWalletOptions'
 import { IconChevronDown, IconSpinner } from '../Icons'
+import type { PropTypes } from '@zag-js/solid'
 
 const layerPanel = panel({ intent: 'default', size: 'default', class: 'overflow-hidden' })
 
@@ -18,7 +19,7 @@ export const PopoverConnectionWallet = (props) => {
   const { walletConnectionState, disconnect } = useConnect(false)
   const [state, send] = useMachine(popover.machine())
   const ref = useSetup({ send, id: createUniqueId() })
-  const api = createMemo(() => popover.connect(state, send, normalizeProps))
+  const api = createMemo(() => popover.connect<PropTypes>(state, send, normalizeProps))
   const [popoverLabel, setPopoverLabel] = createSignal(
     props.initialAddress ? shrinkEthereumAddress(props.initialAddress) : 'Connect',
   )

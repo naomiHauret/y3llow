@@ -1,10 +1,11 @@
 import * as toast from '@zag-js/toast'
 import { Match, Switch } from 'solid-js'
-import { IconCheck, IconClose, IconErrorCircleOutline, IconSpinner } from '../../../components/solid/Icons'
 import { toastIcon, toastLayer } from '~/design-system/styles/toast'
+import { IconCheck, IconClose, IconErrorCircleOutline, IconSpinner } from '../../../components/solid/Icons'
+import type { PropTypes } from '@zag-js/solid'
 
 const Toast = (props) => {
-  const api = toast.connect(props.toast.state, props.toast.send)
+  const api = toast.connect<PropTypes>(props.toast.state, props.toast.send)
   const layerStyles = toastLayer({ intent: api.type })
   const iconStyles = toastIcon({ intent: api.type })
   return (

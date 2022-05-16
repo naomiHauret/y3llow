@@ -10,6 +10,7 @@ import { useMachine, useSetup } from '@zag-js/solid'
 import * as toast from '@zag-js/toast'
 import { useAccount } from '~/hooks'
 import { getLinkedDID, linkCurrentAddress } from '~/helpers/caip10-link'
+import type { PropTypes } from '@zag-js/solid'
 
 const schema = object({
   name: string().max(150).optional(),
@@ -49,7 +50,7 @@ export function useEditProfile(defaultValues) {
     }),
   )
   const ref = useSetup({ send, id: createUniqueId() })
-  const apiToast = toast.group.connect(state, send)
+  const apiToast = toast.group.connect<PropTypes>(state, send)
   const storeForm = createForm({
     initialValues: {
       name: defaultValues?.name ?? '',

@@ -1,9 +1,18 @@
-import { createClient } from '@wagmi/core'
+import { createClient, chain } from '@wagmi/core'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 
+const defaultChains = [
+  chain.rinkeby,
+  chain.polygon,
+  chain.polygonMumbai,
+  chain.optimism,
+  chain.arbitrum,
+]
 export const client = createClient({
   autoConnect: true,
-  connectors: [new MetaMaskConnector()],
+  connectors: [new MetaMaskConnector({
+    chains: defaultChains,
+  })],
 })
 
 export default client

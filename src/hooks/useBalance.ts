@@ -1,8 +1,8 @@
 import { createSignal, createEffect } from 'solid-js'
 import { fetchBalance, connect } from '@wagmi/core'
+import { client } from '~/config'
 import useAccount from './useAccount'
 import useWagmiStore from './useWagmiStore'
-import { client } from '~/config'
 import useNetwork from './useNetwork'
 
 export function useBalance() {

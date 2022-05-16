@@ -34,7 +34,16 @@ const PanelDonate = (props) => {
     }
   })
   async function changeNetwork(value) {
-    await switchNetwork({ chainId: value })
+    try {
+      await switchNetwork({ chainId: value })
+    } catch(e) {
+      apiToast.create({
+        title: 'Something went wrong while switching network. Please reload the page and try again.',
+        type: 'error',
+        duration: 7000,
+      })
+      console.error(e)
+    }
   }
   return (
     <>

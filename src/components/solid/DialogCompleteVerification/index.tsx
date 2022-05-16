@@ -5,6 +5,7 @@ import { useMachine, useSetup, normalizeProps } from '@zag-js/solid'
 import * as dialog from '@zag-js/dialog'
 import { useConnect } from '~/hooks'
 import panel from '~/design-system/styles/panel'
+import type { PropTypes } from "@zag-js/solid"
 
 //@ts-ignore
 const modalBody = panel({
@@ -22,7 +23,7 @@ export default function DialogCompleteVerification() {
     }),
   )
   const ref = useSetup({ send, id: 'dialog-modal-sign-verification' })
-  const api = createMemo(() => dialog.connect(state, send, normalizeProps))
+  const api = createMemo(() => dialog.connect<PropTypes>(state, send, normalizeProps))
 
   createEffect(() => {
     if (walletConnectionState.loading === true) {
@@ -45,10 +46,9 @@ export default function DialogCompleteVerification() {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                {/* @ts-ignore */}
                 <div class="bg-true-black bg-opacity-50 fixed inset-0" {...api().overlayProps} />
               </TransitionChild>
-              <span className="inline-block h-screen align-middle" aria-hidden="true">
+              <span class="inline-block h-screen align-middle" aria-hidden="true">
                 &#8203;
               </span>
               <TransitionChild
@@ -59,21 +59,17 @@ export default function DialogCompleteVerification() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                {/* @ts-ignore */}
                 <div class={modalBody} {...api().underlayProps}>
-                  {/* @ts-ignore */}
                   <div class="px-6 text-start xs:text-center" {...api().contentProps}>
-                    {/* @ts-ignore */}
                     <h2 class="text-xl font-bold" {...api().titleProps}>
                       Complete authentication
                     </h2>
-                    {/* @ts-ignore */}
                     <p class="mt-5 mb-4" {...api().descriptionProps}>
                       Please{' '}
                       <span class="font-bold">
                         sign the <span class="underline">verification message</span> that appeared in your wallet
                       </span>{' '}
-                      to complete the authentication process and start using the app.
+                      to complete the authentication process and continue using y3llow.
                     </p>
 
                     <p class="text-neutral-11 mb-5 text-xs">

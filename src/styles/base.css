@@ -19,8 +19,15 @@ Tailwind setup
   }
 
   input,
-  textarea {
-    @apply appearance-none;
+  textarea,
+  select {
+    @apply focus:outline-none appearance-none border-solid border-1 bg-true-white bg-opacity-3.5 focus:bg-opacity-7.5 border-true-white border-opacity-15 hover:border-opacity-25 focus:border-opacity-25 px-2 py-1 text-sm rounded-md;
+  }
+
+  .default-input[aria-invalid='true'],
+  .default-input[aria-invalid='true'],
+  .default-input:not(:placeholder-shown):invalid {
+    @apply bg-negative-1 bg-negative-2 border-negative-6 focus:border-negative-8 text-negative-11 !important;
   }
 
   [aria-disabled='true'],
@@ -116,7 +123,7 @@ Tailwind setup
 
   /* Input */
   .default-input {
-    @apply focus:outline-none appearance-none transition-colors duration-300 border-solid border-1 bg-true-white bg-opacity-3.5 focus:bg-opacity-7.5 border-true-white border-opacity-15 hover:border-opacity-25 focus:border-opacity-25 px-2 py-1 text-sm rounded-md;
+    @apply focus:outline-none appearance-none border-solid border-1 bg-true-white bg-opacity-3.5 focus:bg-opacity-7.5 border-true-white border-opacity-15 hover:border-opacity-25 focus:border-opacity-25 px-2 py-1 text-sm rounded-md;
   }
 
   .default-input[aria-invalid='true'],
