@@ -37,14 +37,14 @@ const metaLink = `https://y3llow.xyz${permalink}`
   </head>
   <body class="flex min-h-screen flex-col m-0">
       <div class="border-b-1 border-b-neutral-6 border-b-solid">
-      <div class="container mx-auto py-1.5 flex flex-col sm:flex-row items-center">
-      <nav class="flex pb-3 sm:pb-0">
-      <a href="/" class="unstyled font-black tracking-widest">y<span class="text-[yellow]">3</span>llow <span aria-hidden="true" class="text-sm">📒</span></a>
-      </nav>
-      <div class="mx-auto pb-3 sm:pb-0">
-      <FormSearchProfile client:load />
-      </div>
-      {showPopover && <PopoverWalletConnection initialAddress={initialAddress}  client:idle />}
+      <div class="container mx-auto py-3 md:pt-1.5 pb-3 flex flex-col md:flex-row items-center">
+        <nav class="flex pb-3 md:pb-0 text-lg">
+          <a href="/" class="unstyled font-black tracking-widest">y<span class="text-[yellow]">3</span>llow <span aria-hidden="true" class="text-sm">📒</span></a>
+        </nav>
+        <div class="w-full max-w-[42ex] mx-auto pb-3 md:pb-0">
+          <FormSearchProfile client:load />
+        </div>
+        {showPopover && <PopoverWalletConnection initialAddress={initialAddress} client:idle />}
       </div>
     </div>
 

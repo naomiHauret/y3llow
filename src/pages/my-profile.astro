@@ -4,6 +4,7 @@ import Default from '~/layouts/Default.astro'
 import { isAuthenticated } from '~/helpers'
 import { ROUTE_SIGN_IN } from '~/config'
 import EditProfile from './../components/solid/EditProfile'
+import CeramicError from '~/components/astro/CeramicError.astro'
 
 const isCurrentUserAuthenticated = isAuthenticated(Astro.request)
 
@@ -12,7 +13,7 @@ if(!isCurrentUserAuthenticated) {
 }
 
 const dataRes = await getProfile({request: Astro.request, params: Astro.params})
-const data = await dataRes.json()
+const data = dataRes ? await dataRes.json() : null
 
 // Metadata
 const meta = {
@@ -24,7 +25,8 @@ const meta = {
 
 ---
 <Default content={meta} showPopover={true}>
-  <main class="pb-8">
+  <main class="pb-8 flex flex-col">
+    {data !== null ? <>
     <div class="banner flex mb-8 border-b-1 border-solid border-neutral-6">
       <div class="container flex flex-col justify-center items-start mx-auto">
         <h1 class="text-2xl font-extrabold">Edit your profile</h1>
@@ -32,5 +34,6 @@ const meta = {
       </div>
     </div>
     <EditProfile defaultValues={data?.profile} client:idle />
+    </> : <CeramicError />}
   </main>
 </Default>

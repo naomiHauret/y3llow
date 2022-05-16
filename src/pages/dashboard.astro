@@ -2,6 +2,7 @@
 import { get as getProfile } from '~/pages/api/profile'
 import { get as getUserDashboard } from '~/pages/api/dashboard'
 import Layout from '~/layouts/Default.astro'
+import CeramicError from '~/components/astro/CeramicError.astro'
 import { isAuthenticated, ipfsToHttpsUrl, getCurrentUserAddress } from '~/helpers'
 import { ROUTE_MY_PROFILE, ROUTE_SIGN_IN, ROUTE_USER_PROFILE } from '~/config'
 import button from '~/design-system/styles/button'
@@ -24,14 +25,15 @@ const meta = {
 }
 const address = getCurrentUserAddress(Astro.request)
 const dataProfileRes = await getProfile({request: Astro.request, params: Astro.params})
-const dataProfile = await dataProfileRes.json()
+const dataProfile = dataProfileRes ? await dataProfileRes.json() : null
 
 const dataDonationsRes = await getUserDashboard({request: Astro.request, params: Astro.params})
 const dataDonations = await dataDonationsRes.json()
 ---
 <Layout showPopover={true}  content={meta}>
   <main class="container flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-i-6 py-8 mx-auto">
-        <h1 class="sr-only">My dashboard</h1>
+    { dataProfile !== null  ? <>
+    <h1 class="sr-only">My dashboard</h1>
     <div class="w-full md:w-1/4  flex items-center flex-col">
       <div class="h-28 w-28 mb-1 rounded-full overflow-hidden relative bg-neutral-6">
         {dataProfile?.created && dataProfile?.profile.image?.original?.src && <img
@@ -63,6 +65,6 @@ const dataDonations = await dataDonationsRes.json()
       <p class="font-medium"><span class="text-xl text-highlight-10 font-extrabold pie-[1ex]">{dataDonations.sent.length}</span> tips sent</p>
       <p class="font-medium"><span class="text-xl text-highlight-10 font-extrabold pie-[1ex]">{dataDonations.received.length}</span> tips received</p>
     </div>
-
+    </> : <CeramicError />}
   </main>
 </Layout>

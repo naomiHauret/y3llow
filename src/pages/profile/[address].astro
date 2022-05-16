@@ -7,6 +7,7 @@ import { ROUTE_NOT_FOUND, ROUTE_MY_PROFILE } from '~/config'
 import Default from '~/layouts/Default.astro'
 import ProfileNotCreated from '~/components/astro/ProfileNotCreated.astro'
 import Profile from '~/components/astro/Profile.astro'
+import CeramicError from '~/components/astro/CeramicError.astro'
 
 const address = String(Astro.params.address)
 if(!isValidEthereumAddress(address)) {
@@ -15,7 +16,6 @@ if(!isValidEthereumAddress(address)) {
 
 const dataRes = await getProfile({request: Astro.request, params: Astro.params})
 const data = dataRes ? await dataRes.json() : null
-
 const donationsRes = await getDonations({request: Astro.request, params: Astro.params})
 const donations = donationsRes ? await donationsRes.json() : null
 const listDonations = donations.data
@@ -32,7 +32,7 @@ const meta = {
 
 ---
 <Default showPopover={true} content={meta}>
-  <main class="pb-8 bg-neutral-tinted-1 flex-grow">
-    {data.created ? <><Profile initialDonationsList={listDonations} address={address} data={data.profile} isCurrentUserAuthenticated={isCurrentUserAuthenticated} isOwner={isOwner} /></> : <ProfileNotCreated address={address} />}
+  <main class="pb-8 bg-neutral-tinted-1 flex-grow flex flex-col">
+    {data === null ? <CeramicError /> : data.created ? <><Profile initialDonationsList={listDonations} address={address} data={data.profile} isCurrentUserAuthenticated={isCurrentUserAuthenticated} isOwner={isOwner} /></> : <ProfileNotCreated address={address} />}
   </main>
 </Default>

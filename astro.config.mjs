@@ -14,7 +14,7 @@ export default defineConfig({
 	adapter: netlify(),
 	vite: {
 		build: {
-			target: [ 'es2020' ],
+			target: [ 'es2020' ],		  
 		},
 		optimizeDeps: {
 			exclude: ["solid-headless", "caip", "@felte/reporter-solid"],
