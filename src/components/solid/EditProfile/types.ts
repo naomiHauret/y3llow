@@ -1,5 +1,5 @@
-import type { BasicProfile } from "@datamodels/identity-profile-basic";
+import type { BasicProfile } from '@datamodels/identity-profile-basic'
 
 export interface EditProfileProps {
-    defaultValues: BasicProfile
+  defaultValues: BasicProfile
 }

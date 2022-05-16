@@ -7,7 +7,11 @@
     "dev": "astro dev --host --port 3002 --force",
     "start": "npm run dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "css:prettify": "prettier --write \"./**/*.css\"",
+    "js:prettify": "prettier --write \"./**/*.{js,ts,jsx,tsx}\"",
+    "json:prettify": "prettier --write \"./**/*.json\"",
+    "format": "npm run js:prettify && npm run css:prettify && npm run json:prettify"
   },
   "devDependencies": {
     "@astrojs/sitemap": "^0.1.0",

@@ -10,4 +10,3 @@ export interface Donation {
   message?: string
   name?: string
 }
-  

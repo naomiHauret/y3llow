@@ -20,8 +20,7 @@ export const ButtonGroupWalletOptions = () => {
               onClick={() => connect(connector)}
               isLoading={walletConnectionState.loading === true}
             >
-              {/* @ts-ignore */}
-              {' '}{connector.name}{' '}
+              {/* @ts-ignore */} {connector.name}{' '}
             </Button>
           </>
         )}

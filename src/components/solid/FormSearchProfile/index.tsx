@@ -12,7 +12,9 @@ const FormSearchProfile = () => {
       }}
     >
       <div class="flex flex-col">
-      <label class="text-[12px] text-center text-neutral-9" for="search-form-input-ethereum-address">Search profile</label>
+        <label class="text-[12px] text-center text-neutral-9" for="search-form-input-ethereum-address">
+          Search profile
+        </label>
         <FormInput
           id="search-form-input-ethereum-address"
           name="search-form-input-ethereum-address"

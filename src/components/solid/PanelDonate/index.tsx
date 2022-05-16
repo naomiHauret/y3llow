@@ -1,7 +1,7 @@
 import { createEffect, createSignal } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import { switchNetwork } from '@wagmi/core'
-import { useConnect, useNetwork } from '~/hooks'
+import { useAccount, useConnect, useNetwork } from '~/hooks'
 import { useProfileDonation } from '~/hooks/useProfileDonation'
 import useBalance from '~/hooks/useBalance'
 import FormTextarea from '~/design-system/components/FormTextarea'
@@ -22,9 +22,10 @@ const loginButtonStyles = button({
 
 const PanelDonate = (props: PanelDonateProps) => {
   const { walletConnectionState } = useConnect(false)
+  const { accountData } = useAccount()
   const { storeForm, sendDonationState, apiToast } = useProfileDonation(props.initialDonationsList, props.to)
   const { networkData } = useNetwork()
-  const { balanceData } = useBalance()
+  const { balanceState } = useBalance()
   const [showDonationForm, setShowDonationForm] = createSignal(props.isAuthenticated === true)
   const { form } = storeForm
 
@@ -38,7 +39,7 @@ const PanelDonate = (props: PanelDonateProps) => {
   async function changeNetwork(value) {
     try {
       await switchNetwork({ chainId: value })
-    } catch(e) {
+    } catch (e) {
       apiToast.create({
         title: 'Something went wrong while switching network. Please reload the page and try again.',
         type: 'error',
@@ -49,7 +50,15 @@ const PanelDonate = (props: PanelDonateProps) => {
   }
   return (
     <>
-      <div class="md:sticky md:top-5 md:inline-end-5 border-solid border-1 border-neutral-6 rounded-lg p-6">
+      <div
+        class="md:sticky md:top-5 md:inline-end-5 border-solid border-1 border-neutral-6 rounded-lg p-6"
+        classList={{
+          'animate-pulse':
+            showDonationForm() === true &&
+            balanceState.loading === true &&
+            !balanceState.balanceOf[accountData()?.address],
+        }}
+      >
         {showDonationForm() === true ? (
           <>
             <h2 class="text-lg font-extrabold mb-3">Send {props.name} a tip</h2>
@@ -59,6 +68,7 @@ const PanelDonate = (props: PanelDonateProps) => {
                   Use chain
                 </label>
                 <FormSelect
+                  aria-disabled={balanceState.loading === true}
                   hasError={storeForm.errors().chain?.length > 0 === true}
                   class="w-full pie-4"
                   wrapperClass="flex-grow"
@@ -88,6 +98,7 @@ const PanelDonate = (props: PanelDonateProps) => {
                 <div class="flex items-end">
                   <div class="pie-2 w-full">
                     <FormInput
+                      aria-disabled={balanceState.loading === true}
                       hasError={storeForm.errors().amount?.length > 0 === true}
                       class="w-full"
                       placeholder=""
@@ -97,15 +108,17 @@ const PanelDonate = (props: PanelDonateProps) => {
                       type="number"
                       min="0"
                       step="0.000000001"
-                      max={balanceData()?.formatted}
+                      max={balanceState.balanceOf[accountData()?.address]?.formatted}
                     />
                   </div>
-                  <span class="text-sm font-medium">{balanceData()?.symbol}</span>
+                  <span class="text-sm font-medium">{balanceState.balanceOf[accountData()?.address]?.symbol}</span>
                 </div>
                 <div class="text-2xs pt-1 flex">
                   <span class="text-neutral-9 pie-1ex">Available balance:</span>{' '}
-                  <span class="flex overflow-hidden max-w-[8ex]">{balanceData()?.formatted}</span>
-                  <span class="pis-[0.5ex]">{balanceData()?.symbol}</span>
+                  <span class="flex overflow-hidden max-w-[8ex]">
+                    {balanceState.balanceOf[accountData()?.address]?.formatted}
+                  </span>
+                  <span class="pis-[0.5ex]">{balanceState.balanceOf[accountData()?.address]?.symbol}</span>
                 </div>
               </div>
               <div>
@@ -113,6 +126,7 @@ const PanelDonate = (props: PanelDonateProps) => {
                   Message <span class="text-neutral-9 text-2xs">(optional)</span>
                 </label>
                 <FormTextarea
+                  aria-disabled={balanceState.loading === true}
                   hasError={storeForm.errors().message?.length > 0 === true}
                   class="w-full"
                   placeholder=""
@@ -127,6 +141,7 @@ const PanelDonate = (props: PanelDonateProps) => {
                 intent="brand"
                 isLoading={storeForm.isSubmitting === true || sendDonationState.loading === true}
                 disabled={
+                  balanceState.loading ||
                   sendDonationState.loading === true ||
                   storeForm.interacted() === null ||
                   storeForm.isValidating === true ||

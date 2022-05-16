@@ -1,3 +1,3 @@
 export interface PopoverConnectionProps {
-    initialAddress?: string
+  initialAddress?: string
 }

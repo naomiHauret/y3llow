@@ -5,7 +5,7 @@ import { useMachine, useSetup, normalizeProps } from '@zag-js/solid'
 import * as dialog from '@zag-js/dialog'
 import { useConnect } from '~/hooks'
 import panel from '~/design-system/styles/panel'
-import type { PropTypes } from "@zag-js/solid"
+import type { PropTypes } from '@zag-js/solid'
 
 const modalBody = panel({
   //@ts-ignore

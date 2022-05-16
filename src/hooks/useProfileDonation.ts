@@ -1,4 +1,4 @@
-import { sendTransaction, connect, waitForTransaction } from '@wagmi/core'
+import { connect } from '@wagmi/core'
 import { parseEther } from 'ethers/lib/utils'
 import create from 'solid-zustand'
 import { useAccount } from '~/hooks/useAccount'
@@ -12,8 +12,9 @@ import { reporter } from '@felte/reporter-solid'
 import { validateSchema } from '@felte/validator-zod'
 import useWagmiStore from './useWagmiStore'
 import useNetwork from './useNetwork'
+import useTransaction from './useTransaction'
+import type { Donation } from '~/types/donation'
 import type { PropTypes } from '@zag-js/solid'
-import { Donation } from '~/types/donation'
 
 const schema = object({
   chain: string(),
@@ -32,8 +33,8 @@ interface SendDonationState {
 
 interface ListDonationState {
   list: Array<Donation>
-  setList: (list: Array<Donation>) => void,
-  addDonation: (donation: Donation) => void,
+  setList: (list: Array<Donation>) => void
+  addDonation: (donation: Donation) => void
 }
 
 const useSendDonationStore = create<SendDonationState>((set) => ({
@@ -57,7 +58,7 @@ export function useProfileDonation(initialDonationsList: Array<Donation>, to?: s
   const { accountData } = useAccount()
   const { networkData } = useNetwork()
   const donationListState = useDonationsListStore()
-
+  const { makeTransaction } = useTransaction()
   onMount(() => {
     donationListState.setList(initialDonationsList)
   })
@@ -99,23 +100,22 @@ export function useProfileDonation(initialDonationsList: Array<Donation>, to?: s
           await connect({ connector })
         }
         const chainId = networkData()?.chain?.id
-        const result = await sendTransaction({
-          request: {
-            from: accountData().address,
-            to,
-            value: parseEther(`${amount}`),
+        const receipt = await makeTransaction({
+          body: {
+            request: {
+              from: accountData().address,
+              to,
+              value: parseEther(`${amount}`),
+            },
           },
-        })
-        apiToast.create({
-          title: 'Sending your tip through, please wait ...',
-          type: 'info',
-          duration: 5000,
-        })
-        const receipt = await waitForTransaction({
           chainId,
-          hash: result.hash,
+          toastr: apiToast,
+          pendingMessage: 'Sending your tip through, please wait ...',
+          errorMessage: "Something went wrong and your tip couldn't be sent.",
+          successMessage: 'Your tip was sent successfully !',
         })
 
+        // Add the donation to the database
         const donationData = await fetch(API_ROUTE_DONATIONS, {
           method: 'POST',
           body: JSON.stringify({
@@ -130,21 +130,20 @@ export function useProfileDonation(initialDonationsList: Array<Donation>, to?: s
         })
 
         const donation = await donationData.json()
+
         if (donation.data) {
           donationListState.addDonation(donation.data[0])
           sendDonationState.setError(null)
           sendDonationState.setLoading(false)
           sendDonationState.setSuccess(true)
-          apiToast.create({
-            title: 'Your tip was sent successfully !',
-            type: 'success',
-            duration: 5000,
-          })
-          storeForm.reset()
+
+          storeForm.resetField('message')
+          storeForm.resetField('amount')
         } else {
           apiToast.create({
-            title: 'Your tip was sent successfully !',
-            type: 'success',
+            title:
+              'Your tip was sent successfully but something went wrong while adding proof of transaction to the database',
+            type: 'info',
             duration: 5000,
           })
           throw new Error('Something went wrong while adding proof of transaction to the database')
@@ -159,11 +158,6 @@ export function useProfileDonation(initialDonationsList: Array<Donation>, to?: s
       }
     } catch (e) {
       console.error(e)
-      apiToast.create({
-        title: "Something went wrong and your tip couldn't be sent.",
-        type: 'error',
-        duration: 5000,
-      })
       sendDonationState.setError(e)
       sendDonationState.setLoading(false)
       sendDonationState.setSuccess(false)

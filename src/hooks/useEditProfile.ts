@@ -22,10 +22,10 @@ interface SubmitProfileState {
 }
 
 interface FormInputFileImagesState {
-  image: string | null,
-  background: string | null,
+  image: string | null
+  background: string | null
   setBackground: (value: string | null) => void
-  setImage:  (value: string | null) => void
+  setImage: (value: string | null) => void
 }
 
 const schema = object({

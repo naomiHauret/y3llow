@@ -1,5 +1,5 @@
-import type { Donation } from "~/types/donation"
+import type { Donation } from '~/types/donation'
 
 export interface ListDonationsProps {
-    initialDonationsList: Array<Donation>
+  initialDonationsList: Array<Donation>
 }
