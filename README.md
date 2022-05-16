@@ -10,8 +10,6 @@ A mix between the yellow pages and buymeacoffee but decentralized & powered by A
 - `node` version installed `>= 15.0.1`
 - `npm` version installed `>= 7.20.6`
 - [Metamask](https://metamask.io/) browser extension installed (required to interact with the blockchain)
-- Create a new [Alchemy](https://www.alchemy.com) project
-- Create a new [Infura](https://infura.io) project
 - Create a new [Supabase](https://supabase.com) project
 
 ### Store the transactions in a PostgreSQL database & generate an API with Supabase
