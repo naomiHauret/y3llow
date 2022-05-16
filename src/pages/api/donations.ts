@@ -1,10 +1,6 @@
 import lightcookie from 'lightcookie'
 import { COOKIES } from '../../config'
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = import.meta.env.SUPABASE_URL
-const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+import { supabase } from '../../config/supabase'
 
 export async function get({ params, request }) {
   const headers = new Headers()
