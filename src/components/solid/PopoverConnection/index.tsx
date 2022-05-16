@@ -11,10 +11,12 @@ import { Transition } from 'solid-headless'
 import ButtonGroupWalletOptions from '../ButtonGroupWalletOptions'
 import { IconChevronDown, IconSpinner } from '../Icons'
 import type { PropTypes } from '@zag-js/solid'
+import type { PopoverConnectionProps } from './types'
 
+//@ts-ignore
 const layerPanel = panel({ intent: 'default', size: 'default', class: 'overflow-hidden' })
 
-export const PopoverConnectionWallet = (props) => {
+export const PopoverConnectionWallet = (props: PopoverConnectionProps) => {
   const { accountData } = useAccount()
   const { walletConnectionState, disconnect } = useConnect(false)
   const [state, send] = useMachine(popover.machine())
@@ -39,6 +41,7 @@ export const PopoverConnectionWallet = (props) => {
     <>
       <div ref={ref} class={`relative`}>
         <button
+          //@ts-ignore
           class={button({ intent: 'brand-outline', size: 'sm', class: 'after:bg-true-black' })}
           {...api().triggerProps}
         >

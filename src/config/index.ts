@@ -1,5 +1,4 @@
 export * from './api'
-export * from './contracts'
 export * from './ceramic'
 export * from './cookies'
 export * from './routes'

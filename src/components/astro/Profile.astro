@@ -1,10 +1,11 @@
 ---
-import ProfilePanelSignIn from './ProfilePanelSignIn.astro'
 import ipfsToHttpsUrl from '~/helpers/ipfsToHttpsUrl'
 import { IconCardId, IconLink } from '../solid/Icons'
 import button from './../../design-system/styles/button'
 import PanelDonate from './../../components/solid/PanelDonate'
 import ListDonations from '../solid/ListDonations'
+
+//@ts-ignore
 const buttonStyles = button({intent: 'primary-outline', class: 'unstyled'})
 const data = Astro.props.data
 const isOwner = Astro.props.isOwner

@@ -2,15 +2,18 @@
 import { ROUTE_SIGN_IN } from "~/config"
 import button from "~/design-system/styles/button"
 import { cva } from "class-variance-authority"
-
+//@ts-ignore
 const loginButtonStyles = button({intent: "brand-outline", class: "text-center inline-flex mt-3 xs:mis-auto md:mis-0 xs:mt-0 md:w-full md:mt-4 after:bg-true-black xs:flex-shrink-0 md:inline-flex unstyled"})  
 const block = cva("border-solid border-1 border-neutral-6 rounded-lg p-6", {
   variants: {
     screen: {
+      //@ts-ignore
       desktop: "hidden md:block md:h-fit-content md:sticky md:top-5 md:inline-end-0 md:1/2 lg:w-4/12 md:mis-auto",
+      //@ts-ignore
       mobile: "flex flex-col xs:flex-row md:hidden"
   }}
 })
+//@ts-ignore
 const panelStyle = block({ screen: Astro.props.screenVariant })
 ---
 <div class={panelStyle}>

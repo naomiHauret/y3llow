@@ -13,46 +13,46 @@ const metaLink = `https://y3llow.xyz${permalink}`
 ---
 
 <html lang="en-gb" dir="ltr" class="bg-true-black text-true-white">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/png" sizes="100x100" href="/favicon.png" />
-		<title>{metaTitle}</title>
-		<meta name="title" content={metaTitle} />
-		<meta name="description" content={description} />
-  		<meta name="theme-color" content="#FFFF00" />
-		<!-- Open Graph / Facebook -->
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content={metaLink} />
-		<meta property="og:title" content={metaTitle} />
-		<meta property="og:description" content={description} />
-		<meta property="og:image" content={previewImageSrc} />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" sizes="100x100" href="/favicon.png" />
+    <title>{metaTitle}</title>
+    <meta name="title" content={metaTitle} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#FFFF00" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={metaLink} />
+    <meta property="og:title" content={metaTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={previewImageSrc} />
 
-		<!-- Twitter -->
-		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content={metaLink} />
-		<meta property="twitter:title" content={metaTitle} />
-		<meta property="twitter:description" content={description} />
-		<meta property="twitter:image" content={previewImageSrc} />
-	</head>
-	<body class="flex min-h-screen flex-col m-0">
-	    <div class="border-b-1 border-b-neutral-6 border-b-solid">
-		  <div class="container mx-auto py-1.5 flex flex-col sm:flex-row items-center">
-			<nav class="flex pb-3 sm:pb-0">
-			<a href="/" class="unstyled font-black tracking-widest">y<span class="text-[yellow]">3</span>llow <span aria-hidden="true" class="text-sm">📒</span></a>
-			</nav>
-			<div class="mx-auto pb-3 sm:pb-0">
-			<FormSearchProfile client:load />
-			</div>
-			{showPopover && <PopoverWalletConnection initialAddress={initialAddress}  client:idle />}
-		  </div>
-		</div>
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={metaLink} />
+    <meta property="twitter:title" content={metaTitle} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={previewImageSrc} />
+  </head>
+  <body class="flex min-h-screen flex-col m-0">
+      <div class="border-b-1 border-b-neutral-6 border-b-solid">
+      <div class="container mx-auto py-1.5 flex flex-col sm:flex-row items-center">
+      <nav class="flex pb-3 sm:pb-0">
+      <a href="/" class="unstyled font-black tracking-widest">y<span class="text-[yellow]">3</span>llow <span aria-hidden="true" class="text-sm">📒</span></a>
+      </nav>
+      <div class="mx-auto pb-3 sm:pb-0">
+      <FormSearchProfile client:load />
+      </div>
+      {showPopover && <PopoverWalletConnection initialAddress={initialAddress}  client:idle />}
+      </div>
+    </div>
 
-		<slot />
-		<DialogCompleteVerification client:idle />
-	</body>
+    <slot />
+    <DialogCompleteVerification client:idle />
+  </body>
     <script>
       import client from '~/config/wagmi'
-	  window.global = window;
+      window.global = window;
     </script>
 </html>

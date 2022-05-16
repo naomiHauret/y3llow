@@ -1,12 +1,13 @@
 import { Portal } from 'solid-js/web'
 import { useEditProfile } from '~/hooks'
+import ipfsToHttpsUrl from '~/helpers/ipfsToHttpsUrl'
 import Toast from './../../../design-system/components/Toast'
 import Button from './../../../design-system/components/Button'
 import ProfilePreview from './ProfilePreview'
 import FormFields from './FormFields'
-import ipfsToHttpsUrl from '~/helpers/ipfsToHttpsUrl'
+import type { EditProfileProps } from './types'
 
-export const EditProfile = (props) => {
+export const EditProfile = (props: EditProfileProps) => {
   let submitButtonRef
   const { storeForm, apiToast, formInputImagesState, submitEditProfileState } = useEditProfile(props?.defaultValues)
   const { form } = storeForm
@@ -14,6 +15,7 @@ export const EditProfile = (props) => {
     <>
       <div class="container mx-auto relative flex flex-col space-y-6 sm:space-y-0 sm:space-x-8 sm:flex-row">
         <div class="w-full sm:w-7/12 md:w-3/4">
+          {/* @ts-ignore */}
           <form use:form>
             <FormFields
               storeForm={storeForm}

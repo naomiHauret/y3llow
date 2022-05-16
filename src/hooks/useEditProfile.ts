@@ -12,6 +12,22 @@ import { useAccount } from '~/hooks'
 import { getLinkedDID, linkCurrentAddress } from '~/helpers/caip10-link'
 import type { PropTypes } from '@zag-js/solid'
 
+interface SubmitProfileState {
+  success: boolean
+  error: null | string
+  loading: boolean
+  setSuccess: (isVerified: boolean) => void
+  setError: (error: string | null) => void
+  setLoading: (isLoading: boolean) => void
+}
+
+interface FormInputFileImagesState {
+  image: string | null,
+  background: string | null,
+  setBackground: (value: string | null) => void
+  setImage:  (value: string | null) => void
+}
+
 const schema = object({
   name: string().max(150).optional(),
   residenceCountry: string().max(140).optional(),
@@ -27,7 +43,7 @@ const schema = object({
   affiliations: string().max(240).optional(),
 })
 
-const useSubmitProfileStore = create((set) => ({
+const useSubmitProfileStore = create<SubmitProfileState>((set) => ({
   success: false,
   error: null,
   loading: false,
@@ -71,7 +87,7 @@ export function useEditProfile(defaultValues) {
     extend: reporter,
   })
 
-  const useFormInputFileImagesStore = create((set) => ({
+  const useFormInputFileImagesStore = create<FormInputFileImagesState>((set) => ({
     image: defaultValues?.image?.original?.src ?? null,
     background: defaultValues?.background?.original?.src ?? null,
     setBackground: (value) => set((state) => ({ background: value })),
@@ -129,7 +145,7 @@ export function useEditProfile(defaultValues) {
 
       const selfId = new SelfID({ client: ceramicClient })
       const linkedDid = await getLinkedDID(accountData().address)
-      const did = selfId.did._id
+      const did = selfId.did?._id
 
       if (linkedDid === null) {
         const link = await linkCurrentAddress(accountData().address, did)

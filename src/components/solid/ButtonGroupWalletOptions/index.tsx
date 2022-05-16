@@ -1,10 +1,9 @@
 import { For } from 'solid-js'
 import { useConnect } from '~/hooks'
-//import button from '~/design-system/styles/button'
 import Button from '../../../design-system/components/Button'
 
-export const ButtonGroupWalletOptions = (props) => {
-  const { connect, connectors, walletConnectionState } = useConnect(props.runVerification)
+export const ButtonGroupWalletOptions = () => {
+  const { connect, connectors, walletConnectionState } = useConnect(false)
   return (
     <>
       <For each={connectors}>
@@ -16,11 +15,13 @@ export const ButtonGroupWalletOptions = (props) => {
               class={`${
                 walletConnectionState.loading === true ?? 'animate-pulse'
               } w-full flex items-center justify-center`}
+              /* @ts-ignore */
               disabled={connector.ready === false || walletConnectionState.loading === true}
               onClick={() => connect(connector)}
               isLoading={walletConnectionState.loading === true}
             >
-              {/* @ts-expect-error */} {connector.name}{' '}
+              {/* @ts-ignore */}
+              {' '}{connector.name}{' '}
             </Button>
           </>
         )}

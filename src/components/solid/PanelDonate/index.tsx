@@ -1,24 +1,26 @@
 import { createEffect, createSignal } from 'solid-js'
-import { Button } from '~/design-system/components/Button'
-import { useAccount, useConnect, useNetwork } from '~/hooks'
-import { useProfileDonation } from '~/hooks/useProfileDonation'
+import { Portal } from 'solid-js/web'
 import { switchNetwork } from '@wagmi/core'
+import { useConnect, useNetwork } from '~/hooks'
+import { useProfileDonation } from '~/hooks/useProfileDonation'
 import useBalance from '~/hooks/useBalance'
 import FormTextarea from '~/design-system/components/FormTextarea'
 import FormInput from '~/design-system/components/FormInput'
 import FormSelect from '~/design-system/components/FormSelect'
+import { Button } from '~/design-system/components/Button'
+import Toast from '~/design-system/components/Toast'
 import { ROUTE_SIGN_IN } from '~/config'
 import button from '~/design-system/styles/button'
-import { Portal } from 'solid-js/web'
-import Toast from '~/design-system/components/Toast'
+import type { PanelDonateProps } from './types'
 
 const loginButtonStyles = button({
+  //@ts-ignore
   intent: 'brand-outline',
   class:
     'text-center inline-flex mt-3 xs:mis-auto md:mis-0 xs:mt-0 md:w-full md:mt-4 after:bg-true-black xs:flex-shrink-0 md:inline-flex unstyled',
 })
 
-const PanelDonate = (props) => {
+const PanelDonate = (props: PanelDonateProps) => {
   const { walletConnectionState } = useConnect(false)
   const { storeForm, sendDonationState, apiToast } = useProfileDonation(props.initialDonationsList, props.to)
   const { networkData } = useNetwork()

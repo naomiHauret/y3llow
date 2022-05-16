@@ -7,8 +7,8 @@ import { useConnect } from '~/hooks'
 import panel from '~/design-system/styles/panel'
 import type { PropTypes } from "@zag-js/solid"
 
-//@ts-ignore
 const modalBody = panel({
+  //@ts-ignore
   intent: 'default',
   size: 'default',
   class: 'inline-block w-full max-w-md pt-6 pb-10 my-8 overflow-hidden align-middle transition-all transform',
@@ -46,6 +46,7 @@ export default function DialogCompleteVerification() {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
+                {/* @ts-ignore */}
                 <div class="bg-true-black bg-opacity-50 fixed inset-0" {...api().overlayProps} />
               </TransitionChild>
               <span class="inline-block h-screen align-middle" aria-hidden="true">

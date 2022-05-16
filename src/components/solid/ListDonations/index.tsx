@@ -1,9 +1,9 @@
-import { createEffect, For } from 'solid-js'
-import { ROUTE_USER_PROFILE } from '~/config'
+import { For } from 'solid-js'
 import { useProfileDonation } from '~/hooks/useProfileDonation'
 import { shrinkEthereumAddress } from '~/helpers'
+import type { ListDonationsProps } from './types'
 
-export const ListDonations = (props) => {
+export const ListDonations = (props: ListDonationsProps) => {
   const { donationListState } = useProfileDonation(props.initialDonationsList)
 
   return (

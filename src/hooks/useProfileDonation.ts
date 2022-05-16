@@ -13,6 +13,7 @@ import { validateSchema } from '@felte/validator-zod'
 import useWagmiStore from './useWagmiStore'
 import useNetwork from './useNetwork'
 import type { PropTypes } from '@zag-js/solid'
+import { Donation } from '~/types/donation'
 
 const schema = object({
   chain: string(),
@@ -20,7 +21,22 @@ const schema = object({
   message: string().max(420).optional(),
 })
 
-const useSendDonationStore = create((set) => ({
+interface SendDonationState {
+  success: boolean
+  error: null | string
+  loading: boolean
+  setSuccess: (value: boolean) => void
+  setError: (error: string | null) => void
+  setLoading: (isLoading: boolean) => void
+}
+
+interface ListDonationState {
+  list: Array<Donation>
+  setList: (list: Array<Donation>) => void,
+  addDonation: (donation: Donation) => void,
+}
+
+const useSendDonationStore = create<SendDonationState>((set) => ({
   success: false,
   error: null,
   loading: false,
@@ -29,13 +45,13 @@ const useSendDonationStore = create((set) => ({
   setLoading: (value) => set((state) => ({ loading: value })),
 }))
 
-const useDonationsListStore = create((set) => ({
+const useDonationsListStore = create<ListDonationState>((set) => ({
   list: [],
   setList: (list) => set((state) => ({ list: list })),
   addDonation: (donation) => set((state) => ({ list: [donation, ...state.list] })),
 }))
 
-export function useProfileDonation(initialDonationsList, to) {
+export function useProfileDonation(initialDonationsList: Array<Donation>, to?: string) {
   const sendDonationState = useSendDonationStore()
   const wagmiState = useWagmiStore()
   const { accountData } = useAccount()

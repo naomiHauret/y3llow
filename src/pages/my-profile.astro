@@ -1,11 +1,10 @@
 ---
 import { get as getProfile } from '~/pages/api/profile'
 import Default from '~/layouts/Default.astro'
-import { getCurrentUserAddress, isAuthenticated } from '~/helpers'
+import { isAuthenticated } from '~/helpers'
 import { ROUTE_SIGN_IN } from '~/config'
 import EditProfile from './../components/solid/EditProfile'
 
-const address = getCurrentUserAddress(Astro.request)
 const isCurrentUserAuthenticated = isAuthenticated(Astro.request)
 
 if(!isCurrentUserAuthenticated) {

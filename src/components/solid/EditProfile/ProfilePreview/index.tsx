@@ -1,7 +1,8 @@
-import { createEffect, For, Show, Switch } from 'solid-js'
+import { For, Show } from 'solid-js'
 import { IconCardId, IconLink } from '../../Icons'
+import type { ProfilePreviewProps } from './types'
 
-const ProfilePreview = (props) => {
+const ProfilePreview = (props: ProfilePreviewProps) => {
   return (
     <article class="w-full text-xs rounded-md overflow-hidden border-solid border-1 border-neutral-4">
       <div class="aspect-banner w-full bg-neutral-6">

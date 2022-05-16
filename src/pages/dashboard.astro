@@ -6,7 +6,9 @@ import { isAuthenticated, ipfsToHttpsUrl, getCurrentUserAddress } from '~/helper
 import { ROUTE_MY_PROFILE, ROUTE_SIGN_IN, ROUTE_USER_PROFILE } from '~/config'
 import button from '~/design-system/styles/button'
 
+//@ts-ignore
 const editProfileButtonStyles = button({intent: 'primary-outline', size: 'default', class: "w-full unstyled"})
+//@ts-ignore
 const viewProfileButtonStyles = button({intent: 'brand', size: 'default', class: "w-full unstyled"})
 const isCurrentUserAuthenticated = isAuthenticated(Astro.request)
 
