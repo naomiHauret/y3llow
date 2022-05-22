@@ -3,7 +3,7 @@ import { parseEther } from 'ethers/lib/utils'
 import create from 'solid-zustand'
 import { useAccount } from '~/hooks/useAccount'
 import { API_ROUTE_DONATIONS, client } from '~/config'
-import { createUniqueId, onMount } from 'solid-js'
+import { createEffect, createUniqueId, onMount } from 'solid-js'
 import { string, number, object } from 'zod'
 import { useMachine, useSetup } from '@zag-js/solid'
 import * as toast from '@zag-js/toast'
@@ -17,7 +17,6 @@ import type { Donation } from '~/types/donation'
 import type { PropTypes } from '@zag-js/solid'
 
 const schema = object({
-  chain: string(),
   amount: number().positive(),
   message: string().max(420).optional(),
 })
@@ -38,9 +37,11 @@ interface ListDonationState {
 }
 
 const useSendDonationStore = create<SendDonationState>((set) => ({
+  pickedToken: null,
   success: false,
   error: null,
   loading: false,
+  setPickedToken: (value) => set((state) => ({ pickedToken: value })),
   setSuccess: (value) => set((state) => ({ success: value })),
   setError: (value) => set((state) => ({ error: value })),
   setLoading: (value) => set((state) => ({ loading: value })),
@@ -59,6 +60,7 @@ export function useProfileDonation(initialDonationsList: Array<Donation>, to?: s
   const { networkData } = useNetwork()
   const donationListState = useDonationsListStore()
   const { makeTransaction } = useTransaction()
+
   onMount(() => {
     donationListState.setList(initialDonationsList)
   })
@@ -163,6 +165,13 @@ export function useProfileDonation(initialDonationsList: Array<Donation>, to?: s
       sendDonationState.setSuccess(false)
     }
   }
+
+  createEffect(() => {
+    if (networkData()?.chain?.id) {
+      storeForm.reset()
+      sendDonationState.setPickedToken(null)
+    }
+  })
 
   return {
     donationListState,

@@ -1,17 +1,20 @@
-import { createEffect, createSignal } from 'solid-js'
+import { createEffect, createSignal, createMemo, Switch, Match, Show } from 'solid-js'
 import { Portal } from 'solid-js/web'
-import { switchNetwork } from '@wagmi/core'
 import { useAccount, useConnect, useNetwork } from '~/hooks'
 import { useProfileDonation } from '~/hooks/useProfileDonation'
+import * as dialog from '@zag-js/dialog'
+import { useMachine, useSetup, normalizeProps } from '@zag-js/solid'
 import useBalance from '~/hooks/useBalance'
 import FormTextarea from '~/design-system/components/FormTextarea'
-import FormInput from '~/design-system/components/FormInput'
-import FormSelect from '~/design-system/components/FormSelect'
 import { Button } from '~/design-system/components/Button'
 import Toast from '~/design-system/components/Toast'
-import { ROUTE_SIGN_IN } from '~/config'
+import { ROUTE_SIGN_IN, supportedChains } from '~/config'
 import button from '~/design-system/styles/button'
 import type { PanelDonateProps } from './types'
+import DialogPickToken from '../DialogPickToken'
+import DialogSwitchNetwork from '../DialogSwitchNetwork'
+import { IconChevronDown, IconErrorCircleOutline, IconSpinner } from '../Icons'
+import { stables } from '~/helpers'
 
 const loginButtonStyles = button({
   //@ts-ignore
@@ -28,26 +31,29 @@ const PanelDonate = (props: PanelDonateProps) => {
   const { balanceState } = useBalance()
   const [showDonationForm, setShowDonationForm] = createSignal(props.isAuthenticated === true)
   const { form } = storeForm
+  const [stateDialogPickToken, sendDialogPickToken] = useMachine(dialog.machine)
+  const [stateDialogSwitchNetwork, sendDialogSwitchNetwork] = useMachine(dialog.machine)
+  const refDialogPickToken = useSetup({ send: sendDialogPickToken, id: 'dialog-pick-token-donation' })
+  const apiDialogPickToken = createMemo(() => dialog.connect(stateDialogPickToken, sendDialogPickToken, normalizeProps))
+  const refDialogSwitchNetwork = useSetup({ send: sendDialogSwitchNetwork, id: 'dialog-switch-network' })
+  const apiDialogSwitchNetwork = createMemo(() =>
+    dialog.connect(stateDialogSwitchNetwork, sendDialogSwitchNetwork, normalizeProps),
+  )
+  const [amountValid, setAmountValid] = createSignal(true)
+  const [showNetworkName, setShowNetworkName] = createSignal(false)
 
   createEffect(() => {
+    if (networkData()?.chain?.name) {
+      setShowNetworkName(true)
+    } else {
+      setShowNetworkName(false)
+    }
     if (walletConnectionState.connected === true && walletConnectionState.verified === true) {
       setShowDonationForm(true)
     } else {
       showDonationForm(false)
     }
   })
-  async function changeNetwork(value) {
-    try {
-      await switchNetwork({ chainId: value })
-    } catch (e) {
-      apiToast.create({
-        title: 'Something went wrong while switching network. Please reload the page and try again.',
-        type: 'error',
-        duration: 7000,
-      })
-      console.error(e)
-    }
-  }
   return (
     <>
       <div
@@ -67,28 +73,25 @@ const PanelDonate = (props: PanelDonateProps) => {
                 <label class="text-xs text-neutral-12 pie-[1ex]" for="chain">
                   Use chain
                 </label>
-                <FormSelect
-                  aria-disabled={balanceState.loading === true}
-                  hasError={storeForm.errors().chain?.length > 0 === true}
-                  class="w-full pie-4"
-                  wrapperClass="flex-grow"
-                  required
-                  onChange={(e) => {
-                    changeNetwork(parseInt(e.currentTarget.value))
-                  }}
-                  id="chain"
-                  name="chain"
+                <button
+                  disabled={showNetworkName() === false || balanceState.loading === true}
+                  aria-disabled={showNetworkName() === false || balanceState.loading === true}
+                  class="border-1 text-xs border-true-white border-opacity-15 cursor-pointer p-2 rounded-md flex justify-center w-full max-w-fit-content items-center font-medium"
+                  ref={refDialogSwitchNetwork}
+                  {...apiDialogSwitchNetwork().triggerProps}
                 >
-                  <option disabled selected>
-                    Select a chain
-                  </option>
+                  <Show when={showNetworkName() === false}>
+                    <IconSpinner class="animate-spin" />
+                  </Show>
+                  <Show when={showNetworkName() === true}>
+                    <div class="animate-appear flex items-center">
+                      <img height="25" width="25" src={supportedChains[networkData().chain.id].icon} alt="" />
 
-                  {networkData()?.chains?.map((chain) => (
-                    <option selected={chain.id === networkData()?.chain?.id} value={chain.id}>
-                      {chain.name}
-                    </option>
-                  ))}
-                </FormSelect>
+                      <span class="pis-1ex"> {networkData().chain.name}</span>
+                    </div>
+                    <IconChevronDown class="mis-1ex" />
+                  </Show>
+                </button>
               </div>
               <div>
                 <label class="text-xs text-neutral-12 block pb-2" for="amount">
@@ -96,11 +99,54 @@ const PanelDonate = (props: PanelDonateProps) => {
                 </label>
 
                 <div class="flex items-end">
-                  <div class="pie-2 w-full">
-                    <FormInput
-                      aria-disabled={balanceState.loading === true}
-                      hasError={storeForm.errors().amount?.length > 0 === true}
-                      class="w-full"
+                  <div
+                    class="flex border-1 border-solid text-sm rounded-md"
+                    classList={{
+                      'bg-true-white bg-opacity-3.5 focus:bg-opacity-7.5 border-true-white border-opacity-15 hover:border-opacity-25 focus-within:border-opacity-25':
+                        storeForm.errors().amount?.length > 0 === false && amountValid() === true,
+                      'input-error-border': storeForm.errors().amount?.length > 0 === true || amountValid() === false,
+                    }}
+                  >
+                    <button
+                      class="border-ie-1 border-true-white border-opacity-15 cursor-pointer py-1 pis-2 pie-1 rounded-is-md flex justify-center w-full max-w-fit-content items-center font-medium"
+                      disabled={showNetworkName() === false || balanceState.loading === true}
+                      aria-disabled={showNetworkName() === false || balanceState.loading === true}
+                      ref={refDialogPickToken}
+                      {...apiDialogPickToken().triggerProps}
+                    >
+                      <Switch>
+                        <Match when={!balanceState.balanceOf[sendDonationState?.pickedToken]?.symbol}>
+                          <div class="uppercase text-3xs">Pick token</div>
+                        </Match>
+                        <Match when={balanceState.balanceOf[sendDonationState?.pickedToken]?.symbol}>
+                          <div class="text-2xs flex">
+                            <img
+                              src={stables.logos[balanceState.balanceOf[sendDonationState.pickedToken].symbol]}
+                              alt=""
+                              width="20"
+                              height="20"
+                            />
+                            <span class="pis-1ex">
+                              {balanceState.balanceOf[sendDonationState?.pickedToken]?.symbol}
+                            </span>
+                          </div>
+                        </Match>
+                      </Switch>
+                      <IconChevronDown class="mis-1ex text-2xs" />
+                    </button>
+                    <input
+                      aria-disabled={
+                        balanceState.loading === true || !balanceState.balanceOf[sendDonationState?.pickedToken]?.symbol
+                      }
+                      disabled={
+                        balanceState.loading === true || !balanceState.balanceOf[sendDonationState?.pickedToken]?.symbol
+                      }
+                      aria-invalid={storeForm.errors().amount?.length > 0 === true}
+                      class="w-full px-2 py-1 input-report-error rounded-ie-[inherit]"
+                      classList={{
+                        'bg-transparent': storeForm.errors().amount?.length > 0 === false && amountValid() === true,
+                        'input-error-bg': storeForm.errors().amount?.length > 0 === true || amountValid() === false,
+                      }}
                       placeholder=""
                       required
                       name="amount"
@@ -108,17 +154,32 @@ const PanelDonate = (props: PanelDonateProps) => {
                       type="number"
                       min="0"
                       step="0.000000001"
-                      max={balanceState.balanceOf[accountData()?.address]?.formatted}
+                      max={balanceState.balanceOf[sendDonationState?.pickedToken]?.formatted}
+                      oninput={(e) => {
+                        e.target.validity.valid === true ? setAmountValid(true) : setAmountValid(false)
+                      }}
+                      onblur={(e) => {
+                        e.target.validity.valid === true ? setAmountValid(true) : setAmountValid(false)
+                      }}
                     />
                   </div>
-                  <span class="text-sm font-medium">{balanceState.balanceOf[accountData()?.address]?.symbol}</span>
                 </div>
-                <div class="text-2xs pt-1 flex">
-                  <span class="text-neutral-9 pie-1ex">Available balance:</span>{' '}
-                  <span class="flex overflow-hidden max-w-[8ex]">
-                    {balanceState.balanceOf[accountData()?.address]?.formatted}
-                  </span>
-                  <span class="pis-[0.5ex]">{balanceState.balanceOf[accountData()?.address]?.symbol}</span>
+                <div class="text-2xs pt-1 flex flex-col">
+                  <Show when={amountValid() === false}>
+                    <div class="flex pb-1.5 items-center text-negative-11">
+                      <IconErrorCircleOutline class="text-negative-10 text-lg mie-1ex" />
+                      Please type a valid tip amount (max{' '}
+                      {balanceState.balanceOf[sendDonationState?.pickedToken]?.formatted}
+                      {balanceState.balanceOf[sendDonationState?.pickedToken]?.symbol})
+                    </div>
+                  </Show>
+                  <div class="flex">
+                    <span class="text-neutral-9 pie-1ex">Available balance:</span>{' '}
+                    <span class="flex overflow-hidden max-w-[8ex]">
+                      {balanceState.balanceOf[sendDonationState?.pickedToken]?.formatted}
+                    </span>
+                    <span class="pis-[0.5ex]">{balanceState.balanceOf[sendDonationState?.pickedToken]?.symbol}</span>
+                  </div>
                 </div>
               </div>
               <div>
@@ -142,6 +203,7 @@ const PanelDonate = (props: PanelDonateProps) => {
                 isLoading={storeForm.isSubmitting === true || sendDonationState.loading === true}
                 disabled={
                   balanceState.loading ||
+                  amountValid() === false ||
                   sendDonationState.loading === true ||
                   storeForm.interacted() === null ||
                   storeForm.isValidating === true ||
@@ -161,6 +223,27 @@ const PanelDonate = (props: PanelDonateProps) => {
           </>
         )}
       </div>
+      {apiDialogSwitchNetwork().isOpen && (
+        <Portal>
+          <DialogSwitchNetwork api={apiDialogSwitchNetwork} apiToast={apiToast} />
+        </Portal>
+      )}
+      {apiDialogPickToken().isOpen && (
+        <Portal>
+          <DialogPickToken
+            currentAddress={accountData()?.address}
+            api={apiDialogPickToken}
+            balanceState={balanceState}
+            networkId={networkData()?.chain?.id}
+            sendDonationState={sendDonationState}
+            onRadioChange={(value) => sendDonationState.setPickedToken(value)}
+            onClickOption={() => {
+              storeForm.reset()
+              apiDialogPickToken().close()
+            }}
+          />
+        </Portal>
+      )}
       <Portal>
         <div
           {...apiToast.getGroupProps({ placement: 'bottom-center' })}

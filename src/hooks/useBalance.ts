@@ -1,6 +1,7 @@
 import { createEffect } from 'solid-js'
 import { fetchBalance, connect } from '@wagmi/core'
 import { client } from '~/config'
+import { stables } from '~/helpers'
 import useAccount from './useAccount'
 import useWagmiStore from './useWagmiStore'
 import useNetwork from './useNetwork'
@@ -35,20 +36,31 @@ export function useBalance() {
   const { networkData } = useNetwork()
   const balanceState = useBalanceStore()
 
-  async function updateBalanceOf(address) {
+  async function updateBalanceOf(tokenAddress?: string) {
+    let addressToUpdate = tokenAddress ? tokenAddress : accountData().address
     balanceState.setLoading(true)
     balanceState.setError(null)
     try {
-      const balance = await fetchBalance({
-        addressOrName: address,
+      if (tokenAddress) {
+        const balance = await fetchBalance({
+          addressOrName: accountData().address,
+          token: tokenAddress,
+          chainId: networkData()?.chain.id,
+        })
+        if (balance.decimals !== 18) {
+          // @ts-ignore
+          balance.formatted = `${10 ** (18 - balance.decimals) * balance.formatted}`
+        }
+        balanceState.setBalanceOf(addressToUpdate, balance)
+      }
+      const chainTokenBalance = await fetchBalance({
+        addressOrName: accountData().address,
         chainId: networkData()?.chain.id,
       })
-      balanceState.setBalanceOf(address, balance)
-
+      balanceState.setBalanceOf(accountData().address, chainTokenBalance)
       balanceState.setLoading(false)
       balanceState.setError(null)
     } catch (e) {
-      console.error(e)
       balanceState.setLoading(false)
       balanceState.setError(e)
     }
@@ -56,13 +68,27 @@ export function useBalance() {
 
   createEffect(async () => {
     if (accountData().address && networkData()?.chain) {
-      if (!accountData()?.connector) {
-        const idConnector = JSON.parse(client.storage['wagmi.wallet'])
-        // @ts-expect-error
-        const connector = wagmiState.connectors.filter((c) => c.id === idConnector)[0]
-        await connect({ connector })
+      balanceState.setLoading(true)
+      try {
+        if (!accountData()?.connector) {
+          const idConnector = JSON.parse(client.storage['wagmi.wallet'])
+          // @ts-expect-error
+          const connector = wagmiState.connectors.filter((c) => c.id === idConnector)[0]
+          await connect({ connector })
+        }
+        await updateBalanceOf(accountData().address)
+        Promise.all(
+          Object.keys(stables[networkData()?.chain.id]).map(async (tokenName) => {
+            const tokenAddress = stables[networkData()?.chain.id][tokenName]
+            await updateBalanceOf(tokenAddress)
+          }),
+        )
+        balanceState.setLoading(false)
+        balanceState.setError(null)
+      } catch (e) {
+        balanceState.setLoading(false)
+        balanceState.setError(e)
       }
-      await updateBalanceOf(accountData().address)
     }
   })
   return {

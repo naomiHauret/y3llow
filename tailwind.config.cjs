@@ -64,6 +64,7 @@ module.exports = {
         mono: ['monospace'],
       },
       fontSize: {
+        '3xs': clamp(-5),
         '2xs': clamp(-2),
         xs: clamp(-1),
         sm: clamp(-0.5),
@@ -158,6 +159,16 @@ module.exports = {
      },
       extend: {
         keyframes: {
+          'appear': {
+            from: {
+              opacity: 0,
+              transform: 'translateY(10%)',
+            },
+            to: {
+              opacity: 1,
+              transform: 'translateY(0)',
+            }
+          },
           'fade-in': {
             from: {
               opacity: 0,
@@ -178,6 +189,7 @@ module.exports = {
         animation: {
           'fade-out': 'fade-out 200ms ease-in',
           'fade-in': 'fade-in 300ms ease-in forwards',
+          'appear': 'appear 300ms ease-in forwards',
         },
         aspectRatio: {
           'banner': '3 / 1',
