@@ -75,9 +75,11 @@ export const DialogSwitchNetwork = (props) => {
                     <For each={networkData()?.chains}>
                       {(chain) => (
                         <li
-                          class="text-2xs relative flex flex-col justify-start items-center col-span-1 p-3 text-center rounded-md border-solid border-1 border-neutral-4"
+                          class="text-2xs relative flex flex-col justify-start items-center col-span-1 p-3 text-center rounded-md border-solid border-1 bg-true-white bg-opacity-3.5 border-true-white border-opacity-15"
                           classList={{
                             'opacity-50 ring-4 ring-highlight-10 ring-opacity-50': chain.id === networkData().chain.id,
+                            ' hover:border-opacity-25 focus-within:bg-opacity-7.5 focus-within:border-opacity-25':
+                              chain.id !== networkData().chain.id,
                           }}
                         >
                           <img height="50" width="50" src={supportedChains[chain.id].icon} alt="" />
@@ -100,6 +102,12 @@ export const DialogSwitchNetwork = (props) => {
                         </li>
                       )}
                     </For>
+                    <li class="text-2xs text-neutral-12 relative flex flex-col justify-start items-center col-span-1 p-3 text-center rounded-md">
+                      <p class="mt-3 mb-2">Don't see your favourite chain ?</p>
+                      <a href="https://github.com/naomiHauret/y3llow/issues/new" target="_blank" rel="noreferrer">
+                        Request support
+                      </a>
+                    </li>
                   </ul>
                   <button
                     class="absolute top-3 inline-end-3 p-1.5 rounded-full bg-true-white hover:text-highlight-10 bg-opacity-0 hover:bg-opacity-5 focus:bg-opacity-10 focus:outline-none"

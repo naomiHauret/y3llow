@@ -1,4 +1,5 @@
 import { chain } from '@wagmi/core'
+import { CHAIN_AVALANCHE_ID, CHAIN_BSC_ID, CHAIN_FANTOM_ID } from '~/config/wagmi'
 
 export const stables = {
   logos: {
@@ -10,14 +11,22 @@ export const stables = {
     ETH: '/weth.webp',
     wETH: '/weth.webp',
     rETH: '/weth.webp',
+    AETH: '/weth.webp',
     miMATIC: '/mai.webp',
     MATIC: '/matic.webp',
+    AVAX: '/avax.webp',
+    FTM: '/ftm.webp',
+    BNB: '/bnb.webp',
   },
   native: {
     [chain.mainnet.id]: 'ETH',
     [chain.optimism.id]: 'OP',
     [chain.polygon.id]: 'MATIC',
     [chain.rinkeby.id]: 'rETH',
+    [chain.arbitrum.id]: 'AETH',
+    [CHAIN_AVALANCHE_ID]: 'AVAX',
+    [CHAIN_FANTOM_ID]: 'FTM',
+    [CHAIN_BSC_ID]: 'BNB',
   },
   [chain.mainnet.id]: {
     USDC: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -53,5 +62,27 @@ export const stables = {
     USDC: '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b',
     DAI: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
     USDT: '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02',
+  },
+  [CHAIN_AVALANCHE_ID]: {
+    USDC: '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664',
+    DAI: '0xd586E7F844cEa2F87f50152665BCbc2C279D8d70',
+    USDT: '0xc7198437980c041c805A1EDcbA50c1Ce5db95118',
+    MIM: '0x130966628846BFd36ff31a822705796e8cb8C18D',
+    miMATIC: '0x3B55E45fD6bd7d4724F5c47E0d1bCaEdd059263e',
+    wBTC: '0x50b7545627a5162F82A992c33b87aDc75187B218',
+    wETH: '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB',
+  },
+  [CHAIN_FANTOM_ID]: {
+    USDC: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
+    DAI: '0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E',
+    MIM: '0x82f0B8B456c1A451378467398982d4834b6829c1',
+    miMATIC: '0xfB98B335551a418cD0737375a2ea0ded62Ea213b',
+    wBTC: '0x321162Cd933E2Be498Cd2267a90534A804051b11',
+    wETH: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
+  },
+  [CHAIN_BSC_ID]: {
+    USDC: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+    DAI: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
+    MIM: '0xfE19F0B51438fd612f6FD59C1dbB3eA319f433Ba',
   },
 }

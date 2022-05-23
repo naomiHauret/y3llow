@@ -5,7 +5,6 @@ import { IconSpinner } from '../Icons'
 export const OptionToken = (props) => {
   return (
     <RadioGroupOption
-      onClick={props.onClickOption}
       aria-disabled={!props?.formatted || parseInt(props?.formatted === 0)}
       disabled={!props?.formatted || parseFloat(props?.formatted) === 0}
       value={props.value}

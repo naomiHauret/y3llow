@@ -1,11 +1,11 @@
-import { Transition, TransitionChild } from 'solid-headless'
+import { Transition, TransitionChild, RadioGroup } from 'solid-headless'
 import { For } from 'solid-js'
-import { RadioGroup } from 'solid-headless'
 import { stables } from '~/helpers'
 import panel from '~/design-system/styles/panel'
 import OptionToken from './OptionToken'
 import type { PropTypes } from '@zag-js/solid'
 import { IconClose } from '../Icons'
+import Button from '~/design-system/components/Button'
 
 const modalBody = panel({
   //@ts-ignore
@@ -54,12 +54,13 @@ export const DialogPickToken = (props) => {
                   <RadioGroup
                     class="space-y-2"
                     value={props.sendDonationState.pickedToken}
-                    onChange={(e) => props.onRadioChange(e)}
+                    onChange={(e) => {
+                      props.onRadioChange(e)
+                    }}
                   >
                     {({ isSelected, isActive }) => (
                       <>
                         <OptionToken
-                          onClickOption={props.onClickOption}
                           formatted={props.balanceState.balanceOf[props?.currentAddress]?.formatted}
                           tokenName={stables.native[props.networkId]}
                           value={props.currentAddress}
@@ -86,6 +87,9 @@ export const DialogPickToken = (props) => {
                     <IconClose />
                     <span class="sr-only">Close this dialog</span>
                   </button>
+                  <Button onclick={props.onClickOption} class="mt-6 w-full" size="sm" intent="neutral-ghost">
+                    Go back
+                  </Button>
                 </div>
               </div>
             </TransitionChild>
