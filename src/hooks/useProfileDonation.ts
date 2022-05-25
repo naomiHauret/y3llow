@@ -1,8 +1,7 @@
-import { connect } from '@wagmi/core'
-import { parseEther } from 'ethers/lib/utils'
+import { connect, erc20ABI, getContract, writeContract } from '@wagmi/core'
+import { parseEther, parseUnits } from 'ethers/lib/utils'
 import create from 'solid-zustand'
 import { useAccount } from '~/hooks/useAccount'
-import { API_ROUTE_DONATIONS, client } from '~/config'
 import { createEffect, createUniqueId, onMount } from 'solid-js'
 import { string, number, object } from 'zod'
 import { useMachine, useSetup } from '@zag-js/solid'
@@ -10,9 +9,12 @@ import * as toast from '@zag-js/toast'
 import { createForm } from '@felte/solid'
 import { reporter } from '@felte/reporter-solid'
 import { validateSchema } from '@felte/validator-zod'
+import { API_ROUTE_DONATIONS, client } from '~/config'
+import { tokens } from '~/helpers'
 import useWagmiStore from './useWagmiStore'
 import useNetwork from './useNetwork'
 import useTransaction from './useTransaction'
+import useBalance from './useBalance'
 import type { Donation } from '~/types/donation'
 import type { PropTypes } from '@zag-js/solid'
 
@@ -59,7 +61,8 @@ export function useProfileDonation(initialDonationsList: Array<Donation>, to?: s
   const { accountData } = useAccount()
   const { networkData } = useNetwork()
   const donationListState = useDonationsListStore()
-  const { makeTransaction } = useTransaction()
+  const { makeTransaction, makeContractTransaction } = useTransaction()
+  const { balanceState } = useBalance()
 
   onMount(() => {
     donationListState.setList(initialDonationsList)
@@ -94,6 +97,17 @@ export function useProfileDonation(initialDonationsList: Array<Donation>, to?: s
     sendDonationState.setLoading(true)
 
     try {
+      let receipt
+      const chainId = networkData()?.chain?.id
+      const amountOfTokens = parseUnits(`${amount}`, balanceState.balanceOf[sendDonationState.pickedToken].decimals)
+      const txOptions = {
+        chainId,
+        toastr: apiToast,
+        pendingMessage: 'Sending your tip through, please wait ...',
+        errorMessage: "Something went wrong and your tip couldn't be sent.",
+        successMessage: 'Your tip was sent successfully !',
+      }
+
       if (accountData().address) {
         if (!accountData()?.connector) {
           const idConnector = JSON.parse(client.storage['wagmi.wallet'])
@@ -101,22 +115,31 @@ export function useProfileDonation(initialDonationsList: Array<Donation>, to?: s
           const connector = wagmiState.connectors.filter((c) => c.id === idConnector)[0]
           await connect({ connector })
         }
-        const chainId = networkData()?.chain?.id
-        const receipt = await makeTransaction({
-          body: {
-            request: {
-              from: accountData().address,
-              to,
-              value: parseEther(`${amount}`),
-            },
-          },
-          chainId,
-          toastr: apiToast,
-          pendingMessage: 'Sending your tip through, please wait ...',
-          errorMessage: "Something went wrong and your tip couldn't be sent.",
-          successMessage: 'Your tip was sent successfully !',
-        })
 
+        if (sendDonationState.pickedToken !== accountData().address) {
+          receipt = await makeContractTransaction({
+            contractConfig: {
+              addressOrName: sendDonationState.pickedToken,
+              contractInterface: erc20ABI,
+            },
+            functionName: 'transfer',
+            options: {
+              args: [sendDonationState.pickedToken, amountOfTokens],
+            },
+            ...txOptions,
+          })
+        } else {
+          receipt = await makeTransaction({
+            body: {
+              request: {
+                from: accountData().address,
+                to,
+                value: amountOfTokens,
+              },
+            },
+            ...txOptions,
+          })
+        }
         // Add the donation to the database
         const donationData = await fetch(API_ROUTE_DONATIONS, {
           method: 'POST',
@@ -127,7 +150,7 @@ export function useProfileDonation(initialDonationsList: Array<Donation>, to?: s
             hash: receipt.transactionHash,
             message,
             explorer_link: `${networkData()?.chain.blockExplorers.default.url}/tx/${receipt.transactionHash}`,
-            token_name: networkData()?.chain.nativeCurrency.symbol,
+            token_name: balanceState.balanceOf[sendDonationState.pickedToken].symbol,
           }),
         })
 

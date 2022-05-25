@@ -1,7 +1,7 @@
 import { chain } from '@wagmi/core'
 import { CHAIN_AVALANCHE_ID, CHAIN_BSC_ID, CHAIN_FANTOM_ID } from '~/config/wagmi'
 
-export const stables = {
+export const tokens = {
   logos: {
     USDC: '/usdc.webp',
     DAI: '/dai.webp',

@@ -14,7 +14,7 @@ import type { PanelDonateProps } from './types'
 import DialogPickToken from '../DialogPickToken'
 import DialogSwitchNetwork from '../DialogSwitchNetwork'
 import { IconChevronDown, IconErrorCircleOutline, IconSpinner } from '../Icons'
-import { stables } from '~/helpers'
+import { tokens } from '~/helpers'
 
 const loginButtonStyles = button({
   //@ts-ignore
@@ -121,7 +121,7 @@ const PanelDonate = (props: PanelDonateProps) => {
                         <Match when={balanceState.balanceOf[sendDonationState?.pickedToken]?.symbol}>
                           <div class="text-2xs flex">
                             <img
-                              src={stables.logos[balanceState.balanceOf[sendDonationState.pickedToken].symbol]}
+                              src={tokens.logos[balanceState.balanceOf[sendDonationState.pickedToken].symbol]}
                               alt=""
                               width="20"
                               height="20"
@@ -236,10 +236,12 @@ const PanelDonate = (props: PanelDonateProps) => {
             balanceState={balanceState}
             networkId={networkData()?.chain?.id}
             sendDonationState={sendDonationState}
-            onRadioChange={(value) => sendDonationState.setPickedToken(value)}
-            onClickOption={() => {
-              storeForm.reset()
-              apiDialogPickToken().close()
+            onRadioChange={(value) => {
+              if (sendDonationState.pickedToken !== value) {
+                storeForm.reset()
+                apiDialogPickToken().close()
+                sendDonationState.setPickedToken(value)
+              }
             }}
           />
         </Portal>

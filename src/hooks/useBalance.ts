@@ -1,7 +1,7 @@
 import { createEffect } from 'solid-js'
 import { fetchBalance, connect } from '@wagmi/core'
 import { client } from '~/config'
-import { stables } from '~/helpers'
+import { tokens } from '~/helpers'
 import useAccount from './useAccount'
 import useWagmiStore from './useWagmiStore'
 import useNetwork from './useNetwork'
@@ -78,8 +78,8 @@ export function useBalance() {
         }
         await updateBalanceOf(accountData().address)
         Promise.all(
-          Object.keys(stables[networkData()?.chain.id]).map(async (tokenName) => {
-            const tokenAddress = stables[networkData()?.chain.id][tokenName]
+          Object.keys(tokens[networkData()?.chain.id]).map(async (tokenName) => {
+            const tokenAddress = tokens[networkData()?.chain.id][tokenName]
             await updateBalanceOf(tokenAddress)
           }),
         )

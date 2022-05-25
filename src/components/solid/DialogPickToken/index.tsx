@@ -1,6 +1,6 @@
 import { Transition, TransitionChild, RadioGroup } from 'solid-headless'
 import { For } from 'solid-js'
-import { stables } from '~/helpers'
+import { tokens } from '~/helpers'
 import panel from '~/design-system/styles/panel'
 import OptionToken from './OptionToken'
 import type { PropTypes } from '@zag-js/solid'
@@ -62,18 +62,17 @@ export const DialogPickToken = (props) => {
                       <>
                         <OptionToken
                           formatted={props.balanceState.balanceOf[props?.currentAddress]?.formatted}
-                          tokenName={stables.native[props.networkId]}
+                          tokenName={tokens.native[props.networkId]}
                           value={props.currentAddress}
-                          logo={stables.logos[stables.native[props.networkId]]}
+                          logo={tokens.logos[tokens.native[props.networkId]]}
                         />
-                        <For each={Object.keys(stables[props.networkId])}>
+                        <For each={Object.keys(tokens[props.networkId])}>
                           {(tokenName) => (
                             <OptionToken
-                              onClickOption={props.onClickOption}
-                              formatted={props.balanceState.balanceOf[stables[props.networkId][tokenName]]?.formatted}
+                              formatted={props.balanceState.balanceOf[tokens[props.networkId][tokenName]]?.formatted}
                               tokenName={tokenName}
-                              value={stables[props.networkId][tokenName]}
-                              logo={stables.logos[tokenName]}
+                              value={tokens[props.networkId][tokenName]}
+                              logo={tokens.logos[tokenName]}
                             />
                           )}
                         </For>
@@ -87,9 +86,6 @@ export const DialogPickToken = (props) => {
                     <IconClose />
                     <span class="sr-only">Close this dialog</span>
                   </button>
-                  <Button onclick={props.onClickOption} class="mt-6 w-full" size="sm" intent="neutral-ghost">
-                    Go back
-                  </Button>
                 </div>
               </div>
             </TransitionChild>

@@ -1,6 +1,6 @@
 import { switchNetwork } from '@wagmi/core'
 import { Transition, TransitionChild } from 'solid-headless'
-import { For } from 'solid-js'
+import { For, Show, createSignal } from 'solid-js'
 import panel from '~/design-system/styles/panel'
 import { IconClose } from '../Icons'
 import { useNetwork } from '~/hooks'
@@ -16,18 +16,22 @@ const modalBody = panel({
 
 export const DialogSwitchNetwork = (props) => {
   const { networkData } = useNetwork()
+  const [switchPending, setSwitchPending] = createSignal(false)
 
   async function changeNetwork(value) {
+    setSwitchPending(true)
     try {
       await switchNetwork({ chainId: value })
       props.api().close()
     } catch (e) {
       props.apiToast.create({
-        title: 'Something went wrong while switching network. Please reload the page and try again.',
+        title: 'Something went wrong while switching network. Please try again.',
         type: 'error',
         duration: 7000,
       })
       console.error(e)
+    } finally {
+      setSwitchPending(false)
     }
   }
 
@@ -67,9 +71,18 @@ export const DialogSwitchNetwork = (props) => {
                     You are currently using{' '}
                     <span class="text-highlight-10 font-medium">{networkData()?.chain.name}</span>.
                   </p>
-                  <p class="mt-3 text-xs text-true-white mb-6" {...props.api().descriptionProps}>
-                    Click on the network you want to use to send your tip.
-                  </p>
+                  <div class="mt-3 text-xs mb-6">
+                    <Show when={switchPending() === true}>
+                      <p class="text-highlight-10" {...props.api().descriptionProps}>
+                        Please accept to switch network in your wallet.
+                      </p>
+                    </Show>
+                    <Show when={switchPending() === false}>
+                      <p class="text-true-white" {...props.api().descriptionProps}>
+                        Click on the network you want to use to send your tip.
+                      </p>
+                    </Show>
+                  </div>
 
                   <ul class="grid grid-cols-1 gap-3 2xs:grid-cols-2">
                     <For each={networkData()?.chains}>
@@ -77,8 +90,9 @@ export const DialogSwitchNetwork = (props) => {
                         <li
                           class="text-2xs relative flex flex-col justify-start items-center col-span-1 p-3 text-center rounded-md border-solid border-1 bg-true-white bg-opacity-3.5 border-true-white border-opacity-15"
                           classList={{
-                            'opacity-50 ring-4 ring-highlight-10 ring-opacity-50': chain.id === networkData().chain.id,
-                            ' hover:border-opacity-25 focus-within:bg-opacity-7.5 focus-within:border-opacity-25':
+                            'ring-4 ring-highlight-10 ring-opacity-50': chain.id === networkData().chain.id,
+                            'opacity-50': chain.id === networkData().chain.id || switchPending() === true,
+                            'hover:border-opacity-25 focus-within:bg-opacity-7.5 focus-within:border-opacity-25':
                               chain.id !== networkData().chain.id,
                           }}
                         >
@@ -91,7 +105,7 @@ export const DialogSwitchNetwork = (props) => {
                               </div>
                             )}
                           </div>
-                          <Show when={chain.id !== networkData().chain.id}>
+                          <Show when={chain.id !== networkData().chain.id && switchPending() === false}>
                             <button
                               onclick={() => changeNetwork(chain.id)}
                               class="absolute inset-0 w-full h-full block z-10 opacity-0"
@@ -112,6 +126,7 @@ export const DialogSwitchNetwork = (props) => {
                   <button
                     class="absolute top-3 inline-end-3 p-1.5 rounded-full bg-true-white hover:text-highlight-10 bg-opacity-0 hover:bg-opacity-5 focus:bg-opacity-10 focus:outline-none"
                     {...props.api().closeButtonProps}
+                    disabled={switchPending() === true}
                   >
                     <IconClose />
                     <span class="sr-only">Close this dialog</span>
