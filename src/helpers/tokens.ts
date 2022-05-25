@@ -85,4 +85,12 @@ export const tokens = {
     DAI: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
     MIM: '0xfE19F0B51438fd612f6FD59C1dbB3eA319f433Ba',
   },
+  bundlr: {
+    [chain.mainnet.id]: 'ethereum',
+    [chain.polygon.id]: 'matic',
+    [chain.arbitrum.id]: 'arbitrum',
+    [CHAIN_AVALANCHE_ID]: 'avalanche',
+    [CHAIN_FANTOM_ID]: 'fantom',
+    [CHAIN_BSC_ID]: 'bnb',
+  },
 }
