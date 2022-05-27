@@ -86,6 +86,7 @@ export const tokens = {
     MIM: '0xfE19F0B51438fd612f6FD59C1dbB3eA319f433Ba',
   },
   bundlr: {
+    [chain.rinkeby.id]: 'ethereum',
     [chain.mainnet.id]: 'ethereum',
     [chain.polygon.id]: 'matic',
     [chain.arbitrum.id]: 'arbitrum',

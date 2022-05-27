@@ -1,8 +1,8 @@
-import { createEffect } from 'solid-js'
 import { formatEther } from 'ethers/lib/utils'
 import { tokens } from '~/helpers'
-import { WebBundlr } from "@bundlr-network/client"
-import useWagmiStore from './useWagmiStore'
+import { WebBundlr } from '@bundlr-network/client'
+import { chain, getProvider } from '@wagmi/core'
+import create from 'solid-zustand'
 import useNetwork from './useNetwork'
 
 interface BundlrState {
@@ -27,52 +27,48 @@ const useBundlrStore = create<BundlrState>((set) => ({
   setLoadedBalance: (value) => set((state) => ({ loadedBalance: value })),
 }))
 
-
-
-export function useProfileDonation(initialDonationsList: Array<Donation>, to?: string) {
+export function useBundlr() {
   const bundlrState = useBundlrStore()
   const { networkData } = useNetwork()
 
   async function initBundlrInstance() {
-        bundlrState.setLoading(true)
-      try {
-        const bundlr = new WebBundlr("https://node1.bundlr.network", tokens.bundlr[networkData().chain.id] , provider)
-        await bundlr.ready()  
-        bundlrState.setBundlr(bundlr)
-        bundlrState.setError(null)
-      } catch(e) {
-        bundlrState.setError(e)
-        console.error(e)
-      } finally {
-          bundlrState.setLoading(false)
-      }
+    bundlrState.setLoading(true)
+    const currency = tokens.bundlr[networkData().chain.id]
+    const provider = getProvider()
+    try {
+      await provider._ready()
+      const bundlrNodeUrl =
+        networkData().chain.id === chain.rinkeby.id ? 'https://devnet.bundlr.network' : 'https://node1.bundlr.network'
+      const bundlr = new WebBundlr(bundlrNodeUrl, currency, provider)
+      await bundlr.utils.getBundlerAddress(currency)
+      bundlrState.setBundlr(bundlr)
+      bundlrState.setError(null)
+      fetchLoadedBalance()
+    } catch (e) {
+      bundlrState.setError(e)
+      console.error(e)
+    }
   }
 
   async function fetchLoadedBalance() {
     bundlrState.setLoading(true)
     try {
-        const data = await bundlrState.bundlr.getLoadedBalance()
-        bundlrState.setLoadedBalance(formatEther(data.toString()))
-        bundlrState.setError(null)
-    } catch(e) {
+      const data = await bundlrState.bundlr.getLoadedBalance()
+      bundlrState.setLoadedBalance(formatEther(data.toString()))
+      bundlrState.setError(null)
+    } catch (e) {
       bundlrState.setError(e)
       console.error(e)
     } finally {
-        bundlrState.setLoading(false)
+      bundlrState.setLoading(false)
     }
   }
-
-  createEffect(() => {
-    if (networkData()?.chain?.id) {
-        initBundlrInstance()
-    }
-    if(bundlrState.bundlr) {
-        fetchLoadedBalance()
-    }
-  })
 
   return {
-      bundlrState,
-      fetchLoadedBalance
+    bundlrState,
+    initBundlrInstance,
+    fetchLoadedBalance,
   }
 }
+
+export default useBundlr

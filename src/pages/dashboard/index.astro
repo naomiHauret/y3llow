@@ -1,0 +1,25 @@
+---
+import Dashboard from '~/layouts/Dashboard.astro'
+import { get as getUserDashboard } from '~/pages/api/dashboard'
+import { ROUTE_DASHBOARD } from '~/config'
+
+const dataDonationsRes = await getUserDashboard({request: Astro.request, params: Astro.params})
+const dataDonations = await dataDonationsRes.json()
+
+const meta = {
+  title: "Dashboard",
+  description: "y3llow is a Web3 yellow pages app powered by Astro",
+  permalink: "/dashboard",
+  previewImageSrc: "/preview.png",
+}
+---
+<Dashboard activeLink={ROUTE_DASHBOARD} meta={meta}>
+  <div class="border-1 border-solid border-neutral-4 rounded-md p-6">
+    <h2 class="text-2xl text-gradient-brand font-bold mb-3">
+      Overview
+    </h2>
+
+    <p class="font-medium"><span class="text-xl text-highlight-10 font-extrabold pie-[1ex]">{dataDonations.sent.length}</span> tips sent</p>
+    <p class="font-medium"><span class="text-xl text-highlight-10 font-extrabold pie-[1ex]">{dataDonations.received.length}</span> tips received</p>
+  </div>
+</Dashboard>

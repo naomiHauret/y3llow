@@ -1,0 +1,16 @@
+---
+import Dashboard from '~/layouts/Dashboard.astro'
+import { ROUTE_DASHBOARD_POSTS } from '~/config'
+
+const meta = {
+  title: "My posts - Dashboard",
+  description: "y3llow is a Web3 yellow pages app powered by Astro",
+  permalink: "/dashboard/posts/new",
+  previewImageSrc: "/preview.png",
+}
+---
+<Dashboard activeLink={ROUTE_DASHBOARD_POSTS} meta={meta}>
+  <div>
+     Posts list
+  </div>
+</Dashboard>

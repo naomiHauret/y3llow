@@ -61,6 +61,7 @@ export const button = cva(
         ],
       },
       size: {
+        xs: ['text-2xs', 'py-1 px-3', 'font-bold sm:font-semibold', 'border-2'],
         sm: ['text-xs sm:text-xs', 'px-3 py-2 sm:py-2.5', 'font-bold sm:font-semibold', 'border-2'],
         default: ['text-xs', 'py-1 sm:py-2 px-3 sm:px-5', 'font-bold sm:font-semibold', 'border-2'],
       },

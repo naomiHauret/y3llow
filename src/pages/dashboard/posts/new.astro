@@ -1,0 +1,17 @@
+---
+import Dashboard from '~/layouts/Dashboard.astro'
+import { ROUTE_DASHBOARD_CREATE_POST } from '~/config'
+import FormNewPost from '../../../components/solid/FormNewPost'
+const meta = {
+  title: "New post - Dashboard",
+  description: "y3llow is a Web3 yellow pages app powered by Astro",
+  permalink: "/dashboard/posts/new",
+  previewImageSrc: "/preview.png",
+}
+---
+<Dashboard meta={meta} activeLink={ROUTE_DASHBOARD_CREATE_POST}>
+  <div>
+     new post
+     <FormNewPost client:load />
+  </div>
+</Dashboard>
