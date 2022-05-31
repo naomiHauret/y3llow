@@ -1,0 +1,81 @@
+---
+import { get as getProfile } from '~/pages/api/profile'
+import Layout from '~/layouts/Default.astro'
+import CeramicError from '~/components/astro/CeramicError.astro'
+import { IconDashboard, IconUserPost, IconPlusSquare } from './../components/solid/Icons'
+import { isAuthenticated, ipfsToHttpsUrl, getCurrentUserAddress } from '~/helpers'
+import { ROUTE_MY_PROFILE, ROUTE_DASHBOARD, ROUTE_SIGN_IN, ROUTE_USER_PROFILE, ROUTE_DASHBOARD_POSTS, ROUTE_DASHBOARD_CREATE_POST } from '~/config'
+import button from '~/design-system/styles/button'
+
+//@ts-ignore
+const editProfileButtonStyles = button({intent: 'primary-outline', size: 'xs', class: "flex-grow unstyled"})
+//@ts-ignore
+const viewProfileButtonStyles = button({intent: 'brand', size: 'xs', class: "flex-grow unstyled"})
+const isCurrentUserAuthenticated = isAuthenticated(Astro.request)
+
+if(!isCurrentUserAuthenticated) {
+    return Astro.redirect(ROUTE_SIGN_IN)
+}
+
+const address = getCurrentUserAddress(Astro.request)
+const dataProfileRes = await getProfile({request: Astro.request, params: Astro.params})
+const dataProfile = dataProfileRes ? await dataProfileRes.json() : null
+
+const stylesIcon = "text-sm mie-1.5"
+const stylesLinkCommon = "focus:outline-none unstyled inline-flex items-center w-full text-2xs py-2 px-3 rounded-md bg-true-white focus:bg-highlight-1 focus:hover:bg-highlight-2 focus:text-highlight-10"
+const stylesLinkActive = "bg-opacity-5 hover:bg-opacity-10"
+const stylesLinkInactive = "hover:bg-opacity-7.5 bg-opacity-0"
+---
+<Layout showPopover={true}  content={Astro.props.meta}>
+  <main class="container flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-i-6 py-8 mx-auto">
+    { dataProfile !== null  ? <>
+    <h1 class="sr-only">My dashboard</h1>
+    <div class="w-full md:w-1/4  flex items-center flex-col">
+      <div class="h-28 w-28 mb-1 rounded-full overflow-hidden relative bg-neutral-6">
+        {dataProfile?.created && dataProfile?.profile.image?.original?.src && <img
+          alt=""
+          loading="lazy"
+          width="112"
+          height="112"
+          class="absolute w-full h-full object-cover block inset-0"
+          src={ipfsToHttpsUrl(dataProfile.profile.image.original.src)}
+        />}
+      </div>
+
+      <span class="font-bold text-xs">
+        {dataProfile?.created && dataProfile?.profile?.name ? dataProfile?.profile?.name : "Profile not created"}
+      </span>
+      <div class="w-full flex flex-col space-y-3 2xs:space-y-0 2xs:flex-row space-i-2 mt-2 border-b-1 border-neutral-4 border-solid pb-4">
+        <a title="Edit my profile" class={editProfileButtonStyles} href={ROUTE_MY_PROFILE}>
+           Edit <span class="md:sr-only">&nbsp;my profile</span>
+        </a>
+        <a title="View my profile" class={viewProfileButtonStyles} href={`${ROUTE_USER_PROFILE}${address}`}>
+           View <span class="md:sr-only">&nbsp;my profile</span>
+        </a>
+      </div>
+
+      <div class="w-full mt-4 space-y-1">
+        <a class={`${stylesLinkCommon} ${Astro.props.activeLink === ROUTE_DASHBOARD ? stylesLinkActive : stylesLinkInactive}`} href={ROUTE_DASHBOARD}>
+           <IconDashboard class={stylesIcon} /> My dashboard
+        </a>
+      </div>
+      <div class="mt-1 w-full">
+        <span class="uppercase px-3 tracking-wide text-neutral-11 text-2xs">
+            Posts
+        </span>
+        <div class="space-y-1 mt-1">
+            <a class={`${stylesLinkCommon} ${Astro.props.activeLink === ROUTE_DASHBOARD_POSTS ? stylesLinkActive : stylesLinkInactive}`} href={ROUTE_DASHBOARD_POSTS}>
+                <IconUserPost class={stylesIcon} /> My posts
+            </a>
+            <a class={`${stylesLinkCommon} ${Astro.props.activeLink === ROUTE_DASHBOARD_CREATE_POST ? stylesLinkActive : stylesLinkInactive}`} href={ROUTE_DASHBOARD_CREATE_POST}>
+              <IconPlusSquare class={stylesIcon} /> New post
+            </a>
+        </div>
+      </div>
+    </div>
+    <div class="w-full md:w-3/4 h-[fit-content]">
+      <slot />
+    </div>
+    </> : <CeramicError />}
+  </main>
+</Layout>

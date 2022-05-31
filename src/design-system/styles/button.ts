@@ -37,6 +37,13 @@ export const button = cva(
           'border-solid border-negative-10',
           'hover:bg-negative-10 focus:ring-negative-10',
         ],
+        'neutral-ghost': [
+          'text-neutral-12',
+          'hover:bg-opacity-5 hover:bg-true-white',
+          'focus:bg-true-white focus:bg-opacity-90 focus:text-true-black',
+          'hover:focus:bg-true-white hover:focus:bg-opacity-75 hover:focus:text-true-black',
+          'border-transparent',
+        ],
         brand: [
           'text-true-black',
           'bg-gradient-brand focus:ring-tinted-neutral-10',
@@ -54,6 +61,7 @@ export const button = cva(
         ],
       },
       size: {
+        xs: ['text-2xs', 'py-1 px-3', 'font-bold sm:font-semibold', 'border-2'],
         sm: ['text-xs sm:text-xs', 'px-3 py-2 sm:py-2.5', 'font-bold sm:font-semibold', 'border-2'],
         default: ['text-xs', 'py-1 sm:py-2 px-3 sm:px-5', 'font-bold sm:font-semibold', 'border-2'],
       },

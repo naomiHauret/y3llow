@@ -1,4 +1,5 @@
 export * from './useAccount'
+export * from './useBundlr'
 export * from './useConnect'
 export * from './useEditProfile'
 export * from './useNetwork'

@@ -1,31 +1,97 @@
 import { chain } from '@wagmi/core'
+import { CHAIN_AVALANCHE_ID, CHAIN_BSC_ID, CHAIN_FANTOM_ID } from '~/config/wagmi'
 
-// @TODO: implement stable donation
-
-export const stables = {
+export const tokens = {
   logos: {
-    USDC: '//logo.chainbit.xyz/usdc',
-    DAI: '//logo.chainbit.xyz/dai',
-    USDT: '//logo.chainbit.xyz/usdt',
+    USDC: '/usdc.webp',
+    DAI: '/dai.webp',
+    USDT: '/usdt.webp',
+    MIM: '/mim.webp',
+    wBTC: '/wbtc.webp',
+    ETH: '/weth.webp',
+    wETH: '/weth.webp',
+    rETH: '/weth.webp',
+    AETH: '/weth.webp',
+    miMATIC: '/mai.webp',
+    MATIC: '/matic.webp',
+    AVAX: '/avax.webp',
+    FTM: '/ftm.webp',
+    BNB: '/bnb.webp',
+  },
+  native: {
+    [chain.mainnet.id]: 'ETH',
+    [chain.optimism.id]: 'OP',
+    [chain.polygon.id]: 'MATIC',
+    [chain.rinkeby.id]: 'rETH',
+    [chain.arbitrum.id]: 'AETH',
+    [CHAIN_AVALANCHE_ID]: 'AVAX',
+    [CHAIN_FANTOM_ID]: 'FTM',
+    [CHAIN_BSC_ID]: 'BNB',
   },
   [chain.mainnet.id]: {
     USDC: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     DAI: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    MIM: '0x99D8a9C45b2ecA8864373A26D1459e3Dff1e17F3',
+    wETH: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    wBTC: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
   },
   [chain.arbitrum.id]: {
     USDC: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
     DAI: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
     USDT: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+    MIM: '0xFEa7a6a0B346362BF88A9e4A88416B77a57D6c2A',
+    wETH: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+    wBTC: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
   },
   [chain.optimism.id]: {
     USDC: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
     DAI: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
     USDT: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
+    wBTC: '0x68f180fcCe6836688e9084f035309E29Bf0A2095',
   },
   [chain.polygon.id]: {
     USDC: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
     DAI: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
     USDT: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+    miMATIC: '0xa3Fa99A148fA48D14Ed51d610c367C61876997F1',
+    wBTC: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
+    wETH: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+  },
+  [chain.rinkeby.id]: {
+    USDC: '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b',
+    DAI: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
+    USDT: '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02',
+  },
+  [CHAIN_AVALANCHE_ID]: {
+    USDC: '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664',
+    DAI: '0xd586E7F844cEa2F87f50152665BCbc2C279D8d70',
+    USDT: '0xc7198437980c041c805A1EDcbA50c1Ce5db95118',
+    MIM: '0x130966628846BFd36ff31a822705796e8cb8C18D',
+    miMATIC: '0x3B55E45fD6bd7d4724F5c47E0d1bCaEdd059263e',
+    wBTC: '0x50b7545627a5162F82A992c33b87aDc75187B218',
+    wETH: '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB',
+  },
+  [CHAIN_FANTOM_ID]: {
+    USDC: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
+    DAI: '0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E',
+    MIM: '0x82f0B8B456c1A451378467398982d4834b6829c1',
+    miMATIC: '0xfB98B335551a418cD0737375a2ea0ded62Ea213b',
+    wBTC: '0x321162Cd933E2Be498Cd2267a90534A804051b11',
+    wETH: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
+  },
+  [CHAIN_BSC_ID]: {
+    USDC: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+    DAI: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
+    MIM: '0xfE19F0B51438fd612f6FD59C1dbB3eA319f433Ba',
+  },
+  bundlr: {
+    [chain.rinkeby.id]: 'ethereum',
+    [chain.mainnet.id]: 'ethereum',
+    [chain.polygon.id]: 'matic',
+    [chain.arbitrum.id]: 'arbitrum',
+    [CHAIN_AVALANCHE_ID]: 'avalanche',
+    [CHAIN_FANTOM_ID]: 'fantom',
+    [CHAIN_BSC_ID]: 'bnb',
   },
 }

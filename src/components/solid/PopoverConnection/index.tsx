@@ -121,7 +121,7 @@ export const PopoverConnectionWallet = (props: PopoverConnectionProps) => {
                       <p class="xs:text-xs text-neutral-12 pt-2.5 font-medium">Don't see your favourite wallet ?</p>
                       <a
                         class="xs:text-xs"
-                        href="https://github.com/naomihauret/definitelysomething"
+                        href="https://github.com/naomiHauret/y3llow/issues/new"
                         target="_blank"
                         rel="noreferrer"
                       >
